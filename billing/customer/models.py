@@ -9,3 +9,8 @@ class Customer(models.Model):
         protocol='IPv4', blank=True, null=True)
     mac_address = models.CharField(max_length=255, blank=True)
     added = models.DateTimeField(auto_now_add=True)
+    online = models.BooleanField(default=False)
+    # status = enabled, disabled
+
+    def __str__(self):
+        return self.login

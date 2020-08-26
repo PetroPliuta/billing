@@ -140,3 +140,5 @@ cython_debug/
 # +++ own +++
 node_modules
 .idea
+1.py
+static-files

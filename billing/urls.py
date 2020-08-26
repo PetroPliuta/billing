@@ -8,29 +8,30 @@ from . import views
 from .customer.views import CustomerViewSet
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = User
-        fields = ['url', 'username', 'email', 'is_staff']
+# class UserSerializer(serializers.HyperlinkedModelSerializer):
+#     class Meta:
+#         model = User
+#         fields = ['url', 'username', 'email', 'is_staff']
 
-# ViewSets define the view behavior.
+# # ViewSets define the view behavior.
 
 
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+# class UserViewSet(viewsets.ModelViewSet):
+#     queryset = User.objects.all()
+#     serializer_class = UserSerializer
 
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
-router.register(r'users', UserViewSet)
+# router.register(r'users', UserViewSet)
 router.register(r'customers', CustomerViewSet)
 
 urlpatterns = [
-    path('', include(router.urls)),
+    # path('', include(router.urls)),
+    re_path(r'^api/v1/', include(router.urls)),
     path('admin/', admin.site.urls),
-    # path('customer/', include('billing.customer.urls')),
+    path('customer/', include('billing.customer.urls')),
     # # react
-    # path('', views.index),
-    re_path(r'^api-auth/', include('rest_framework.urls'))
+    path('', views.index),
+    # re_path(r'^api/v1/', include('rest_framework.urls'))
 ]
