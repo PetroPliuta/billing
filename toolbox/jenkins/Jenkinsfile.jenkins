@@ -17,10 +17,11 @@ pipeline  {
             steps {
                 echo 'Creating docker image ...'
                 dir('.'){
-                    sh "docker stop \$(docker ps --no-trunc | grep $image_name | awk {'print \$1'})"
-                    sh "docker rm \$(docker ps --no-trunc | grep $image_name | awk {'print \$1'})"
-                    sh 'docker rmi $image_name'
+                    sh "docker stop \$(docker ps -a --no-trunc | grep $image_name | awk {'print \$1'}) || true"
+                    sh "docker rm `docker ps --no-trunc | grep $image_name | awk {'print \$1'}` || true"
+                    sh "docker rmi $image_name || true"
                     sh "docker build -t $image_name ."
+                    sh "docker run -d --restart=always -p 8000:8000 $image_name"
 
                     // sh "docker stop"
                     // sh "docker run -d --restart=always pliuta/billing ."
