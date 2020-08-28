@@ -39,14 +39,14 @@ pipeline  {
                 }
             }
         }
-        // stage("docker push") {
-        //     steps {
-        //         echo " ============== pushing image =================="
-        //         sh '''
-        //         docker push macnaer/chatterboxserver:latest
-        //         '''
-        //     }
-        // }
+        stage("docker push") {
+            steps {
+                echo " ============== pushing image =================="
+                sh '''
+                docker push ${image_name}:latest
+                '''
+            }
+        }
         // stage("docker stop") {
         //     steps {
         //         echo " ============== stoping all images =================="
