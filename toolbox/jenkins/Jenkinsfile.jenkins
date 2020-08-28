@@ -15,8 +15,10 @@ pipeline  {
             steps {
                 echo 'Creating docker image ...'
                 dir('.'){
-                    // sh "docker build -t macnaer/chatterboxserver . "
-                    echo "First step works ... 123"
+                    sh "docker build -t pliuta/billing ."
+                    // sh "docker stop"
+                    // sh "docker run -d --restart=always pliuta/billing ."
+                    // echo "First step works ... 123"
                 }
             }
         }
