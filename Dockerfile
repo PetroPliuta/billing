@@ -4,7 +4,7 @@ FROM python:latest
 WORKDIR /var/www
 COPY . /var/www
 
-RUN apt install nodejs npm
+RUN apt update && apt install nodejs npm
 RUN npm install
 RUN npm run build
 RUN pip install -r requirements.txt
