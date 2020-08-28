@@ -42,9 +42,9 @@ pipeline  {
         stage("docker push") {
             steps {
                 echo " ============== pushing image =================="
-                sh '''
-                docker push ${image_name}:latest
-                '''
+                sh """
+                docker push $image_name:latest
+                """
             }
         }
         // stage("docker stop") {
