@@ -2,6 +2,8 @@
 //  groovy Jenkinsfile
 properties([disableConcurrentBuilds()])
 
+image_name = 'pliuta/billing'
+
 pipeline  {
     agent { 
         label 'master'
@@ -15,7 +17,11 @@ pipeline  {
             steps {
                 echo 'Creating docker image ...'
                 dir('.'){
-                    sh "docker build -t pliuta/billing ."
+                    sh "docker stop \$(docker ps --no-trunc | grep $image_name | awk {'print \$1'})"
+                    sh "docker rm \$(docker ps --no-trunc | grep $image_name | awk {'print \$1'})"
+                    sh 'docker rmi $image_name'
+                    sh "docker build -t $image_name ."
+
                     // sh "docker stop"
                     // sh "docker run -d --restart=always pliuta/billing ."
                     // echo "First step works ... 123"
