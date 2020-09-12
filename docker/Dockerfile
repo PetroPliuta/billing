@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:18.04
 
 ENV container=docker LC_ALL=C
 
@@ -34,6 +34,7 @@ RUN sed -i 's/# deb/deb/g' /etc/apt/sources.list \
     && apt-get install -y command-not-found bash-completion \
     #billing
     && apt -y install nginx freeradius mysql-server \
+    #python-requests \
     #clean
     && unset DEBIAN_FRONTEND \
     && unset RUNLEVEL \

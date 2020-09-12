@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'billing.customer',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -136,3 +137,7 @@ STATIC_ROOT = BASE_DIR / "static-files"
 #         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
 #     ]
 # }
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}

@@ -22,10 +22,6 @@ pipeline  {
                     sh "docker rmi $image_name || true"
                     sh "docker build -t $image_name ."
                     sh "docker run -d --restart=always -p 8000:8000 $image_name"
-
-                    // sh "docker stop"
-                    // sh "docker run -d --restart=always pliuta/billing ."
-                    // echo "First step works ... 123"
                 }
             }
         }
