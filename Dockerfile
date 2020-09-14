@@ -51,7 +51,8 @@ RUN \
 #billing
 WORKDIR /var/www/billing
 COPY . /var/www/billing
-RUN pip3 install -r requirements.txt
+RUN pip3 install -r requirements.txt \
+    && python3 manage.py collectstatic
 
 #freeradius
 COPY 'docker/freeradius-billing_module_config' /etc/freeradius/3.0/mods-available/billing

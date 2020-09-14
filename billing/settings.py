@@ -125,8 +125,8 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     BASE_DIR / "static/",
-    BASE_DIR / "static-files/",
-    '/var/www/billing/static-files/',
+    #BASE_DIR / "static-files/",
+    #'/var/www/billing/static-files/',
 ]
 
 STATIC_ROOT = BASE_DIR / "static-files"
