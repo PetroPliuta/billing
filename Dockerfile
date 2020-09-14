@@ -44,13 +44,6 @@ RUN apt-get -y install nginx freeradius \
     python3-dev libmysqlclient-dev build-essential \
     && systemctl enable freeradius
 
-#clean
-RUN \
-    unset DEBIAN_FRONTEND \
-    && unset RUNLEVEL \
-    && echo 'debconf debconf/frontend select Dialog' | debconf-set-selections \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
 # 'echo -e' works
 SHELL ["/bin/bash","-c"]
 
@@ -95,6 +88,14 @@ RUN cd /etc/freeradius/3.0/ \
     virtual_server = billing \n\
     } \n " >> /etc/freeradius/3.0/clients.conf
 COPY 'docker/freeradius-billing_module_code' /etc/freeradius/3.0/billing/billing.py
+
+#clean
+RUN \
+    unset DEBIAN_FRONTEND \
+    && unset RUNLEVEL \
+    && echo 'debconf debconf/frontend select Dialog' | debconf-set-selections \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && rm -rf .git docker env frontend node_modules static toolbox .gitignore .dockerignore db.sqlite3 Dockerfile package* webpack.config.js
 
 VOLUME [ "/sys/fs/cgroup" ]
 
