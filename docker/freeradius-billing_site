@@ -1,0 +1,23 @@
+server billing {
+
+authorize {
+        preprocess
+        python
+        chap
+        mschap
+#       eap
+        files
+        pap
+}
+
+authenticate {
+        Auth-Type Python{
+            python
+        }
+}
+
+accounting{
+        python
+}
+
+}

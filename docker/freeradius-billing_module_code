@@ -13,6 +13,10 @@ def instantiate(p):
   print p
   # return 0 for success or -1 for failure
 
+def authenticate(p):
+  print 'authenticate:', p
+  return radiusd.RLM_MODULE_OK
+
 def authorize(p):
   print "*** authorize ***"
   print
@@ -54,6 +58,9 @@ def authorize(p):
 #    print("result=",result)
 
     radius_reply=dict()
+    radius_config={
+        'Auth-Type':'Python'
+    }
 
     ip = str(response[0][u'ip_address'])
     if ip:
@@ -63,7 +70,7 @@ def authorize(p):
     print 'radius_reply', tuple(radius_reply.items())
 
     if len(response) > 0:
-      return (radiusd.RLM_MODULE_OK, tuple(radius_reply.items()) , None)
+      return (radiusd.RLM_MODULE_OK, tuple(radius_reply.items()) , tuple(radius_config.items()))
     else:
       return radiusd.RLM_MODULE_REJECT
 
@@ -111,4 +118,5 @@ def send_coa(p):
 
 def detach():
   print "*** goodbye from example.py ***"
-  return radiusd.RLM_MODULE_OK 
+  return radiusd.RLM_MODULE_OK
+  

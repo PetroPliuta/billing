@@ -28,7 +28,7 @@ python_path="${confdir}/billing/:/usr/lib/python2.7/dist-packages/:/usr/lib/pyth
         func_authorize = authorize
 
         mod_authenticate = ${.module}
-#       func_authenticate = authenticate
+        func_authenticate = authenticate
 
         mod_preacct = ${.module}
         func_preacct = preacct
