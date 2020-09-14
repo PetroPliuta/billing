@@ -6,6 +6,7 @@ RUN \
     #do not ask questions during apt install
     DEBIAN_FRONTEND="noninteractive"; \
     #allow start redis-server, mysql-server
+    export RUNLEVEL=5; \
     RUNLEVEL=5; \
     sed -i 's/# deb/deb/g' /etc/apt/sources.list \
     #allow work with services
@@ -36,9 +37,11 @@ RUN apt-get install -y systemd systemd-sysv \
     #install useful tools
     && apt-get install -y command-not-found bash-completion
 
-#billing
-RUN apt-get -y install nginx freeradius mysql-server \
+#deb packets
+RUN apt-get -y install nginx freeradius \
+    mysql-server \
     python3-pip python-requests \
+    python3-dev libmysqlclient-dev build-essential \
     && systemctl enable freeradius
 
 #clean
@@ -48,16 +51,30 @@ RUN \
     && echo 'debconf debconf/frontend select Dialog' | debconf-set-selections \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+# 'echo -e' works
+SHELL ["/bin/bash","-c"]
+
+#mysql
+RUN service mysql restart \
+    && echo -e "create database billing; \
+    CREATE USER 'django'@'%' IDENTIFIED BY 'password'; \
+    GRANT ALL PRIVILEGES ON billing.* TO 'django'@'%'; \
+    FLUSH PRIVILEGES; " | mysql
+
 #billing
 WORKDIR /var/www/billing
 COPY . /var/www/billing
 RUN pip3 install -r requirements.txt \
+    && pip3 install mysqlclient \
+    && service mysql restart \
+    && python3 manage.py migrate \
+    && echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@billing.com', 'admin')" | python3 manage.py shell \
     && python3 manage.py collectstatic
 
 #web
 RUN pip3 install gunicorn \
     && cp docker/gunicorn.service /etc/systemd/system \
- #   && systemctl daemon-reload \
+    #   && systemctl daemon-reload \
     && systemctl enable gunicorn \
     && cp docker/nginx-billing /etc/nginx/sites-available/billing \
     && ln -sr /etc/nginx/sites-available/billing /etc/nginx/sites-enabled/ \
@@ -66,8 +83,7 @@ RUN pip3 install gunicorn \
 #freeradius
 COPY 'docker/freeradius-billing_module_config' /etc/freeradius/3.0/mods-available/billing
 COPY 'docker/freeradius-billing_site' /etc/freeradius/3.0/sites-available/billing
-# echo -e
-SHELL ["/bin/bash","-c"]
+
 RUN cd /etc/freeradius/3.0/ \
     && ln -sr mods-available/billing mods-enabled/ \
     && ln -sr sites-available/billing sites-enabled/ \
@@ -78,13 +94,11 @@ RUN cd /etc/freeradius/3.0/ \
     secret = testing123 \n\
     virtual_server = billing \n\
     } \n " >> /etc/freeradius/3.0/clients.conf
-
 COPY 'docker/freeradius-billing_module_code' /etc/freeradius/3.0/billing/billing.py
-
 
 VOLUME [ "/sys/fs/cgroup" ]
 
-EXPOSE 8000 1812/udp 1813/udp
+EXPOSE 80 1812/udp 1813/udp
 
 # ENTRYPOINT python3 manage.py runserver 0.0.0.0:8000
 ENTRYPOINT ["/lib/systemd/systemd"]
