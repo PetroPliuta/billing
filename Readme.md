@@ -6,4 +6,6 @@ docker run --rm --name=billing --privileged -d -p 1812:1812/udp -p 1813:1813/udp
 ```
 
 Enter into:  
-```bash docker exec -it billing /bin/bash```
+```bash 
+docker exec -it billing /bin/bash
+```
