@@ -8,114 +8,110 @@
 import radiusd
 import requests
 
+
 def instantiate(p):
-  print "*** instantiate ***"
-  print p
-  # return 0 for success or -1 for failure
+    print "*** instantiate ***"
+    print p
+    # return 0 for success or -1 for failure
+
 
 def authenticate(p):
-  print 'authenticate:', p
-  return radiusd.RLM_MODULE_OK
+    print 'authenticate:', p
+    return radiusd.RLM_MODULE_OK
+
 
 def authorize(p):
-  print "*** authorize ***"
-  print
-  radiusd.radlog(radiusd.L_INFO, '*** radlog call in authorize ***')
-  print
-  print p
-  print
-  print "radiusd.config:", radiusd.config
-  print
+    print "*** authorize ***"
+    print
+    radiusd.radlog(radiusd.L_INFO, '*** radlog call in authorize ***')
+    print
+    print p
+    print
+    print "radiusd.config:", radiusd.config
+    print
 
 # From NAS:
-  username=""
-  password=""
-  from_nas = dict((x, y) for x,y in p)
-  if from_nas['User-Name']:
-    username=from_nas['User-Name']
-  if from_nas['User-Password']:
-    password=from_nas['User-Password']
-#  print 'dict username=', nas['User-Name']
+    username = ""
+    password = ""
+    from_nas = dict((x, y) for x, y in p)
+    if from_nas['User-Name']:
+        username = from_nas['User-Name']
+    if from_nas['User-Password']:
+        password = from_nas['User-Password']
+    print "From NAS username, password:", username, password
 
-#  for item in p:
-#    if item[0]=='User-Name':
-#      username=item[1]
-#    elif item[0]=='User-Password':
-#      password=item[1]
-#   result = (customer for customer in r.json() if customer.login == p.)
-  print username, password
-
-# From Django API:
+# Django API:
 #TODO: Try-catch
-#  r = requests.get("http://192.168.11.105:8000/api/v1/customers/")
-  r = requests.get("http://127.0.0.1/api/v1/customers/?login="+username+"&password="+password)
-  if not r.status_code==200:
-    return radiusd.RLM_MODULE_REJECT
-  else:
-    response = r.json()
-    print "response:", response
-#    result = next((customer for customer in response if customer['login'] == username and customer['password'] == password), None)
-#    print("result=",result)
-
-    radius_reply=dict()
-    radius_config={
-        'Auth-Type':'Python'
-    }
-
-    ip = str(response[0][u'ip_address'])
-    if ip:
-      print 'ip address:', ip
-      radius_reply['Framed-IP-Address'] = ip
-
-    print 'radius_reply', tuple(radius_reply.items())
-
-    if len(response) > 0:
-      return (radiusd.RLM_MODULE_OK, tuple(radius_reply.items()) , tuple(radius_config.items()))
+    r = requests.get("http://127.0.0.1/api/v1/customers/?login=" +
+                     username+"&password="+password)
+    if not r.status_code == 200:
+        return radiusd.RLM_MODULE_REJECT
     else:
-      return radiusd.RLM_MODULE_REJECT
+        response = r.json()
+        print "API response:", response
 
-#('response:', [{u'added': u'2020-08-17T05:12:20.878935+03:00', u'online': False, u'email': u'', u'mac_address': u'', u'login': u'user', u'password': u'pass', u'ip_address': None, u'id': 2}])
+        radius_reply = dict()
+        radius_config = {
+            'Auth-Type': 'Python'
+        }
 
-#  return radiusd.RLM_MODULE_OK
+        ip = str(response[0][u'ip_address'])
+        if ip:
+            print 'ip address:', ip
+            radius_reply['Framed-IP-Address'] = ip
+
+        print 'radius_reply: ', tuple(radius_reply.items())
+
+        if len(response) > 0:
+            return (radiusd.RLM_MODULE_OK, tuple(radius_reply.items()), tuple(radius_config.items()))
+        else:
+            return radiusd.RLM_MODULE_REJECT
+
 
 def preacct(p):
-  print "*** preacct ***"
-  print p
-  return radiusd.RLM_MODULE_OK
+    print "*** preacct ***"
+    print p
+    return radiusd.RLM_MODULE_OK
+
 
 def accounting(p):
-  print "*** accounting ***"
-  radiusd.radlog(radiusd.L_INFO, '*** radlog call in accounting (0) ***')
-  print
-  print p
-  return radiusd.RLM_MODULE_OK
+    print "*** accounting ***"
+    radiusd.radlog(radiusd.L_INFO, '*** radlog call in accounting (0) ***')
+    print
+    print p
+    return radiusd.RLM_MODULE_OK
+
 
 def pre_proxy(p):
-  print "*** pre_proxy ***"
-  print p
-  return radiusd.RLM_MODULE_OK
+    print "*** pre_proxy ***"
+    print p
+    return radiusd.RLM_MODULE_OK
+
 
 def post_proxy(p):
-  print "*** post_proxy ***"
-  print p
-  return radiusd.RLM_MODULE_OK
+    print "*** post_proxy ***"
+    print p
+    return radiusd.RLM_MODULE_OK
+
 
 def post_auth(p):
-  print "*** post_auth ***"
-  print p
-  return radiusd.RLM_MODULE_OK
+    print "*** post_auth ***"
+    print p
+    return radiusd.RLM_MODULE_OK
+
 
 def recv_coa(p):
-  print "*** recv_coa ***"
-  print p
-  return radiusd.RLM_MODULE_OK
+    print "*** recv_coa ***"
+    print p
+    return radiusd.RLM_MODULE_OK
+
 
 def send_coa(p):
-  print "*** send_coa ***"
-  print p
-  return radiusd.RLM_MODULE_OK
+    print "*** send_coa ***"
+    print p
+    return radiusd.RLM_MODULE_OK
 
 
 def detach():
-  print "*** goodbye from example.py ***"
-  return radiusd.RLM_MODULE_OK
+    print "*** goodbye from example.py ***"
+    return radiusd.RLM_MODULE_OK

@@ -10,7 +10,7 @@ server {
 
     #location = /favicon.ico { access_log off; log_not_found off; }
     location /static/ {
-        alias /var/www/billing/static-files;
+        alias /var/www/billing/static-files/;
     }
 
     location / {
