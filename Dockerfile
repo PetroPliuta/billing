@@ -54,6 +54,15 @@ COPY . /var/www/billing
 RUN pip3 install -r requirements.txt \
     && python3 manage.py collectstatic
 
+#web
+RUN pip3 install gunicorn \
+    && cp docker/gunicorn.service /etc/systemd/system \
+ #   && systemctl daemon-reload \
+    && systemctl enable gunicorn \
+    && cp docker/nginx-billing /etc/nginx/sites-available/billing \
+    && ln -sr /etc/nginx/sites-available/billing /etc/nginx/sites-enabled/ \
+    && rm -f /etc/nginx/sites-enabled/default
+
 #freeradius
 COPY 'docker/freeradius-billing_module_config' /etc/freeradius/3.0/mods-available/billing
 COPY 'docker/freeradius-billing_site' /etc/freeradius/3.0/sites-available/billing

@@ -48,7 +48,7 @@ def authorize(p):
 # From Django API:
 #TODO: Try-catch
 #  r = requests.get("http://192.168.11.105:8000/api/v1/customers/")
-  r = requests.get("http://127.0.0.1:8000/api/v1/customers/?login="+username+"&password="+password)
+  r = requests.get("http://127.0.0.1/api/v1/customers/?login="+username+"&password="+password)
   if not r.status_code==200:
     return radiusd.RLM_MODULE_REJECT
   else:
@@ -119,4 +119,3 @@ def send_coa(p):
 def detach():
   print "*** goodbye from example.py ***"
   return radiusd.RLM_MODULE_OK
-  

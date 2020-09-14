@@ -1,0 +1,20 @@
+server {
+    listen 80 default_server;
+    server_name _;
+
+    charset     utf-8;
+    # max upload size
+    client_max_body_size 75M;
+
+
+
+    #location = /favicon.ico { access_log off; log_not_found off; }
+    location /static/ {
+        alias /var/www/billing/static-files;
+    }
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/var/www/billing/billing.sock;
+    }
+}

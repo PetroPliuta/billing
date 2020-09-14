@@ -1,0 +1,12 @@
+[Unit]
+Description=gunicorn daemon
+After=network.target
+
+[Service]
+User=root
+Group=www-data
+WorkingDirectory=/var/www/billing
+ExecStart=/usr/local/bin/gunicorn --access-logfile - --workers 3 --bind unix:billing.sock billing.wsgi
+
+[Install]
+WantedBy=multi-user.target
