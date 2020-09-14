@@ -67,7 +67,6 @@ RUN pip3 install -r requirements.txt \
 #web
 RUN pip3 install gunicorn \
     && cp docker/gunicorn.service /etc/systemd/system \
-    #   && systemctl daemon-reload \
     && systemctl enable gunicorn \
     && cp docker/nginx-billing /etc/nginx/sites-available/billing \
     && ln -sr /etc/nginx/sites-available/billing /etc/nginx/sites-enabled/ \
@@ -101,5 +100,4 @@ VOLUME [ "/sys/fs/cgroup" ]
 
 EXPOSE 80 1812/udp 1813/udp
 
-# ENTRYPOINT python3 manage.py runserver 0.0.0.0:8000
 ENTRYPOINT ["/lib/systemd/systemd"]
