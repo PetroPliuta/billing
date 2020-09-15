@@ -50,7 +50,7 @@ SHELL ["/bin/bash","-c"]
 
 #mysql
 RUN service mysql restart \
-    && echo -e "create database billing; \
+    && echo -e "create database billing character set utf8 COLLATE utf8_general_ci; \
     CREATE USER 'django'@'%' IDENTIFIED BY 'password'; \
     GRANT ALL PRIVILEGES ON billing.* TO 'django'@'%'; \
     FLUSH PRIVILEGES; " | mysql

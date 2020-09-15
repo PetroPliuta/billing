@@ -30,42 +30,35 @@ def authorize(p):
     print "radiusd.config:", radiusd.config
     print
 
-# From NAS:
-    username = ""
-    password = ""
+    # NAS
+    nas_username = ""
     from_nas = dict((x, y) for x, y in p)
     if from_nas['User-Name']:
-        username = from_nas['User-Name']
-    if from_nas['User-Password']:
-        password = from_nas['User-Password']
-    print "From NAS username, password:", username, password
-
-# Django API:
-#TODO: Try-catch
-    r = requests.get("http://127.0.0.1/api/v1/customers/?login=" +
-                     username+"&password="+password)
+        nas_username = from_nas['User-Name']
+    print "nas_username:", nas_username
+    # API
+    try:
+        r = requests.get(
+            "http://127.0.0.1/api/v1/customers/?login="+nas_username)
+    except:
+        return radiusd.RLM_MODULE_REJECT
     if not r.status_code == 200:
         return radiusd.RLM_MODULE_REJECT
-    else:
-        response = r.json()
-        print "API response:", response
-
-        radius_reply = dict()
-        radius_config = {
-            'Auth-Type': 'Python'
-        }
-
-        ip = str(response[0][u'ip_address'])
-        if ip:
-            print 'ip address:', ip
-            radius_reply['Framed-IP-Address'] = ip
-
-        print 'radius_reply: ', tuple(radius_reply.items())
-
-        if len(response) > 0:
-            return (radiusd.RLM_MODULE_OK, tuple(radius_reply.items()), tuple(radius_config.items()))
-        else:
-            return radiusd.RLM_MODULE_REJECT
+    api_response = r.json()
+    print "api_response:", api_response
+    if len(api_response) == 0:
+        return radiusd.RLM_MODULE_REJECT
+    radius_reply = {}
+    radius_config = {
+        'Cleartext-Password': str(api_response[0][u'password'])
+    }
+    ip = str(api_response[0][u'ip_address'])
+    if ip:
+        print 'ip address:', ip
+        radius_reply['Framed-IP-Address'] = ip
+    print 'radius_reply:', tuple(radius_reply.items())
+    print 'radius_config:', tuple(radius_config.items())
+    return (radiusd.RLM_MODULE_OK, tuple(radius_reply.items()), tuple(radius_config.items()))
 
 
 def preacct(p):

@@ -5,8 +5,7 @@ authorize {
         python
         chap
         mschap
-#       eap
-        files
+#        eap
         pap
 }
 
@@ -14,6 +13,16 @@ authenticate {
         Auth-Type Python{
             python
         }
+        Auth-Type PAP{
+            pap
+        }
+        Auth-Type CHAP{
+            chap
+        }
+        Auth-Type MS-CHAP{
+            mschap
+        }
+        mschap
 }
 
 accounting{
