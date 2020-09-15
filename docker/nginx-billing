@@ -6,15 +6,23 @@ server {
     # max upload size
     client_max_body_size 75M;
 
-
+    error_log  /var/log/nginx/error.log warn;
+    access_log  /var/log/nginx/access.log;
 
     #location = /favicon.ico { access_log off; log_not_found off; }
+    
+    location /api/ {
+        allow 127.0.0.0/8;
+        deny all;
+        proxy_pass http://unix:/var/www/billing/billing.sock;
+    }
+    
     location /static/ {
         alias /var/www/billing/static-files/;
     }
 
     location / {
-        include proxy_params;
+#        include proxy_params;
         proxy_pass http://unix:/var/www/billing/billing.sock;
     }
 }

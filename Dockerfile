@@ -2,6 +2,7 @@ FROM ubuntu:18.04
 
 ENV container=docker LC_ALL=C
 
+#Prepare
 RUN \
     #do not ask questions during apt install
     DEBIAN_FRONTEND="noninteractive"; \
@@ -39,9 +40,9 @@ RUN apt-get install -y systemd systemd-sysv \
 
 #deb packets
 RUN apt-get -y install nginx freeradius \
-    mysql-server \
+    mysql-server libmysqlclient-dev \
     python3-pip python-requests \
-    python3-dev libmysqlclient-dev build-essential \
+# python3-dev build-essential \
     && systemctl enable freeradius
 
 # 'echo -e' works
@@ -58,15 +59,13 @@ RUN service mysql restart \
 WORKDIR /var/www/billing
 COPY . /var/www/billing
 RUN pip3 install -r requirements.txt \
-    && pip3 install mysqlclient \
     && service mysql restart \
     && python3 manage.py migrate \
     && echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@billing.com', 'admin')" | python3 manage.py shell \
     && python3 manage.py collectstatic
 
 #web
-RUN pip3 install gunicorn \
-    && cp docker/gunicorn.service /etc/systemd/system \
+RUN cp docker/gunicorn.service /etc/systemd/system \
     && systemctl enable gunicorn \
     && cp docker/nginx-billing /etc/nginx/sites-available/billing \
     && ln -sr /etc/nginx/sites-available/billing /etc/nginx/sites-enabled/ \
@@ -75,7 +74,6 @@ RUN pip3 install gunicorn \
 #freeradius
 COPY 'docker/freeradius-billing_module_config' /etc/freeradius/3.0/mods-available/billing
 COPY 'docker/freeradius-billing_site' /etc/freeradius/3.0/sites-available/billing
-
 RUN cd /etc/freeradius/3.0/ \
     && ln -sr mods-available/billing mods-enabled/ \
     && ln -sr sites-available/billing sites-enabled/ \
