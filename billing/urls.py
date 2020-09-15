@@ -35,3 +35,7 @@ urlpatterns = [
     path('', views.index),
     # re_path(r'^api/v1/', include('rest_framework.urls'))
 ]
+
+admin.site.site_header = "Billing Administration"
+admin.site.site_title = "Billing Admin Portal"
+admin.site.index_title = "Welcome to Billing Admin Portal"
