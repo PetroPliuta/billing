@@ -35,8 +35,9 @@ class Customer(models.Model):
         #print('disconnect, ', self.login, self.ip_address)
         try:
             router = self.last_online_router
+            print(router)
             if router:
-                subprocess.run("radclient {}:3799 disconnect {}".format(router.ip_address, router.secret).split(),input="User-Name={}".format(self.login))
+                subprocess.run("/usr/bin/env radclient {}:3799 disconnect {}".format(router.ip_address, router.secret).split(),input="User-Name={}".format(self.login))
         except Exception as ex:
             print("radclient disconnect fail:", ex)
 
