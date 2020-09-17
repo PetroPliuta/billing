@@ -1,7 +1,6 @@
 from django.db import models
 from django import forms
 from billing.settings import BASE_DIR
-import dbus
 
 
 class Router(models.Model):
@@ -29,6 +28,7 @@ class Router(models.Model):
     @staticmethod
     def restart_radius():
         try:
+            import dbus
             sysbus = dbus.SystemBus()
             systemd1 = sysbus.get_object(
                 'org.freedesktop.systemd1', '/org/freedesktop/systemd1')

@@ -140,3 +140,4 @@ cython_debug/
 # +++ own +++
 node_modules
 .idea
+config/radius_clients.conf
