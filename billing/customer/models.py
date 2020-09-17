@@ -34,3 +34,6 @@ class Transaction(models.Model):
 
     def __str__(self):
         return str(self.id) + ' ' + str(self.date_time)
+    class Meta:
+        verbose_name = "Finance transaction"
+        verbose_name_plural = "Finance transactions"

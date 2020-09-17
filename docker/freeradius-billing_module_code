@@ -48,6 +48,12 @@ def authorize(p):
     print "api_response:", api_response
     if len(api_response) == 0:
         return radiusd.RLM_MODULE_REJECT
+    active=api_response[0][u'active']
+    balance=api_response[0][u'balance']
+    print "active:", active
+    print "balance:", balance
+    if not active or balance<0:
+        return radiusd.RLM_MODULE_REJECT
     radius_reply = {}
     radius_config = {
         'Cleartext-Password': str(api_response[0][u'password'])
@@ -108,3 +114,4 @@ def send_coa(p):
 def detach():
     print "*** goodbye from example.py ***"
     return radiusd.RLM_MODULE_OK
+    
