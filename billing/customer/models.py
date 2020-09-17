@@ -3,6 +3,7 @@ from django.utils import timezone
 from billing.networking.models import Router
 import subprocess
 
+
 class Customer(models.Model):
     login = models.CharField(max_length=255, unique=True)
     password = models.CharField(max_length=255, blank=True)
@@ -16,7 +17,8 @@ class Customer(models.Model):
     last_online_datetime = models.DateTimeField(blank=True, null=True)
     last_online_ip = models.GenericIPAddressField(
         protocol='IPv4', blank=True, null=True)
-    last_online_router = models.ForeignKey(to=Router, on_delete=models.SET_NULL, null=True)
+    last_online_router = models.ForeignKey(
+        to=Router, on_delete=models.SET_NULL, null=True)
     # status = enabled, disabled
     description = models.TextField(blank=True, max_length=10**4)
 
@@ -31,13 +33,14 @@ class Customer(models.Model):
         return sum
 
     def disconnect(self):
-        #echo "User-Name=user" | radclient 192.168.11.106:3799 disconnect testing123
+        # echo "User-Name=user" | radclient 192.168.11.106:3799 disconnect testing123
         #print('disconnect, ', self.login, self.ip_address)
         try:
             router = self.last_online_router
-            print(router)
             if router:
-                subprocess.run("/usr/bin/env radclient {}:3799 disconnect {}".format(router.ip_address, router.secret).split(),input="User-Name={}".format(self.login))
+                cmd = "/usr/bin/env radclient {}:3799 disconnect {}".format(
+                    router.ip_address, router.secret).split()
+                subprocess.run(cmd, input="User-Name={}".format(self.login), encoding='ascii')
         except Exception as ex:
             print("radclient disconnect fail:", ex)
 
