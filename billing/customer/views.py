@@ -13,4 +13,4 @@ class CustomerViewSet(viewsets.ModelViewSet):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ("login", "password")
+    filterset_fields = ('login',)
