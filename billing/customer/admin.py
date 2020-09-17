@@ -17,17 +17,20 @@ class CustomerAdmin(admin.ModelAdmin):
     form = CustomerForm
 
     def save_model(self, request, obj, form, change):
+        customer = obj
         super().save_model(request, obj, form, change)
         if change:
-            obj.disconnect()
+            customer.disconnect()
 
     def delete_model(self, request, obj):
+        customer = obj
         super().delete_model(request, obj)
-        obj.disconnect()
+        customer.disconnect()
 
     def delete_queryset(self, request, queryset):
+        customers = queryset
         queryset.delete()
-        for obj in queryset:
+        for obj in customers:
             obj.disconnect()
 
 

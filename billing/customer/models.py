@@ -19,7 +19,6 @@ class Customer(models.Model):
         protocol='IPv4', blank=True, null=True)
     last_online_router = models.ForeignKey(
         to=Router, on_delete=models.SET_NULL, null=True)
-    # status = enabled, disabled
     description = models.TextField(blank=True, max_length=10**4)
 
     def __str__(self):
@@ -33,8 +32,6 @@ class Customer(models.Model):
         return sum
 
     def disconnect(self):
-        # echo "User-Name=user" | radclient 192.168.11.106:3799 disconnect testing123
-        #print('disconnect, ', self.login, self.ip_address)
         try:
             router = self.last_online_router
             if router:
