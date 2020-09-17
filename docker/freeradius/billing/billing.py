@@ -48,13 +48,15 @@ def authorize(p):
     print "api_response:", api_response
     if len(api_response) == 0:
         return radiusd.RLM_MODULE_REJECT
-    active=api_response[0][u'active']
-    balance=api_response[0][u'balance']
+    active = api_response[0][u'active']
+    balance = api_response[0][u'balance']
     print "active:", active
     print "balance:", balance
-    if not active or balance<0:
+    if not active or balance < 0:
         return radiusd.RLM_MODULE_REJECT
-    radius_reply = {}
+    radius_reply = {
+        'Acct-Interim-Interval': '60',
+    }
     radius_config = {
         'Cleartext-Password': str(api_response[0][u'password'])
     }
@@ -65,20 +67,6 @@ def authorize(p):
     print 'radius_reply:', tuple(radius_reply.items())
     print 'radius_config:', tuple(radius_config.items())
     return (radiusd.RLM_MODULE_OK, tuple(radius_reply.items()), tuple(radius_config.items()))
-
-
-def preacct(p):
-    print "*** preacct ***"
-    print p
-    return radiusd.RLM_MODULE_OK
-
-
-def accounting(p):
-    print "*** accounting ***"
-    radiusd.radlog(radiusd.L_INFO, '*** radlog call in accounting (0) ***')
-    print
-    print p
-    return radiusd.RLM_MODULE_OK
 
 
 def pre_proxy(p):
@@ -114,4 +102,3 @@ def send_coa(p):
 def detach():
     print "*** goodbye from example.py ***"
     return radiusd.RLM_MODULE_OK
-    

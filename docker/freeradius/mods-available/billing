@@ -17,6 +17,7 @@ python {
 python_path="${confdir}/billing/:/usr/lib/python2.7/dist-packages/:/usr/lib/python2.7/"
 
         module = billing
+        module_accounting = billing_accounting
 
         mod_instantiate = ${.module}
         func_instantiate = instantiate
@@ -30,10 +31,10 @@ python_path="${confdir}/billing/:/usr/lib/python2.7/dist-packages/:/usr/lib/pyth
         mod_authenticate = ${.module}
         func_authenticate = authenticate
 
-        mod_preacct = ${.module}
+        mod_preacct = ${.module_accounting}
         func_preacct = preacct
 
-        mod_accounting = ${.module}
+        mod_accounting = ${.module_accounting}
         func_accounting = accounting
 
         mod_checksimul = ${.module}
