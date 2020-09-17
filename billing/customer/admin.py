@@ -18,6 +18,11 @@ class CustomerAdmin(admin.ModelAdmin):
     search_fields = ('login', 'ip_address', 'email')
     ordering = ("id",)
 
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        if change:
+            obj.disconnect()
+
 
 admin.site.register(Customer, CustomerAdmin)
 
