@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'billing.customer',
+    'billing.networking',
     'django_filters',
 ]
 
