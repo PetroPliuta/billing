@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from billing.networking.models import Router
+import subprocess
 
 class Customer(models.Model):
     login = models.CharField(max_length=255, unique=True)
@@ -30,7 +31,14 @@ class Customer(models.Model):
         return sum
 
     def disconnect(self):
-        print('disconnect, ', self.login, self.ip_address)
+        #echo "User-Name=user" | radclient 192.168.11.106:3799 disconnect testing123
+        #print('disconnect, ', self.login, self.ip_address)
+        try:
+            router = self.last_online_router
+            if router:
+                subprocess.run("radclient {}:3799 disconnect {}".format(router.ip_address, router.secret).split(),input="User-Name={}".format(self.login))
+        except Exception as ex:
+            print("radclient disconnect fail:", ex)
 
 
 class Transaction(models.Model):

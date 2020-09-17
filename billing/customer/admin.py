@@ -21,6 +21,15 @@ class CustomerAdmin(admin.ModelAdmin):
         if change:
             obj.disconnect()
 
+    def delete_model(self, request, obj):
+        super().delete_model(request, obj)
+        obj.disconnect()
+
+    def delete_queryset(self, request, queryset):
+        queryset.delete()
+        for obj in queryset:
+            obj.disconnect()
+
 
 admin.site.register(Customer, CustomerAdmin)
 
