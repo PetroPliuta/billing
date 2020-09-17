@@ -12,8 +12,18 @@ class RouterAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
-        # if change:
-        #     obj.disconnect()
+        Router.generate_config()
+        Router.restart_radius()
+
+    def delete_model(self, request, obj):
+        super().delete_model(request, obj)
+        Router.generate_config()
+        Router.restart_radius()
+
+    def delete_queryset(self, request, queryset):
+        queryset.delete()
+        Router.generate_config()
+        Router.restart_radius()
 
 
 admin.site.register(Router, RouterAdmin)

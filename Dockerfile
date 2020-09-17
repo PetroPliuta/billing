@@ -42,7 +42,7 @@ RUN apt-get install -y systemd systemd-sysv \
 RUN apt-get -y install nginx freeradius \
     mysql-server libmysqlclient-dev \
     python3-pip python-requests \
-# python3-dev build-essential \
+    # python3-dev build-essential \
     && systemctl enable freeradius
 
 # 'echo -e' works
@@ -59,6 +59,7 @@ RUN service mysql restart \
 WORKDIR /var/www/billing
 COPY . /var/www/billing
 RUN pip3 install -r requirements.txt \
+    && pip3 install dbus-python \
     && service mysql restart \
     && python3 manage.py makemigrations \
     && python3 manage.py migrate \
