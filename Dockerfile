@@ -58,9 +58,9 @@ RUN service mysql restart \
 #billing
 WORKDIR /var/www/billing
 COPY . /var/www/billing
-RUN pip3 install -r requirements.txt \
-    #&& service dbus restart \
-    && apt -y install pkg-config libdbus-1-dev libglib2.0-dev \
+RUN apt -y install pkg-config libdbus-1-dev libglib2.0-dev \
+    # && service dbus restart \
+    && pip3 install -r requirements.txt \
     # && pip3 install dbus-python \
     && service mysql restart \
     && python3 manage.py makemigrations \
