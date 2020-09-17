@@ -6,7 +6,7 @@ from . import views
 
 # Serializers define the API representation.
 from .customer.views import CustomerViewSet
-
+from .networking.views import RouterViewSet
 
 # class UserSerializer(serializers.HyperlinkedModelSerializer):
 #     class Meta:
@@ -25,6 +25,7 @@ from .customer.views import CustomerViewSet
 router = routers.DefaultRouter()
 # router.register(r'users', UserViewSet)
 router.register(r'customers', CustomerViewSet)
+router.register(r'routers', RouterViewSet)
 
 urlpatterns = [
     # path('', include(router.urls)),

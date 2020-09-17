@@ -36,7 +36,7 @@ RUN apt-get install -y systemd systemd-sysv \
     /lib/systemd/system/plymouth* \
     /lib/systemd/system/systemd-update-utmp* \
     #install useful tools
-    && apt-get install -y command-not-found bash-completion
+    && apt-get install -y command-not-found bash-completion ntpdate
 
 #deb packets
 RUN apt-get -y install nginx freeradius \
