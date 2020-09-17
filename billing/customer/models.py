@@ -12,6 +12,7 @@ class Customer(models.Model):
     added = models.DateTimeField(default=timezone.now)
     active = models.BooleanField(default=True)
     online = models.BooleanField(default=False)
+    last_online = models.DateTimeField(blank=True, null=True)
     # status = enabled, disabled
     description = models.TextField(blank=True, max_length=10**4)
 
@@ -34,6 +35,7 @@ class Transaction(models.Model):
 
     def __str__(self):
         return str(self.id) + ' ' + str(self.date_time)
+
     class Meta:
         verbose_name = "Finance transaction"
         verbose_name_plural = "Finance transactions"

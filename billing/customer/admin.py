@@ -12,7 +12,7 @@ class CustomerAdmin(admin.ModelAdmin):
     list_display_links = ('login',)
     list_editable = ('ip_address', 'active')
     list_filter = ('active', 'online')
-    readonly_fields = ('online', 'balance')
+    readonly_fields = ('online', 'balance', 'last_online')
     save_as = True
     save_as_continue = False
     search_fields = ('login', 'ip_address', 'email')

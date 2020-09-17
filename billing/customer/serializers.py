@@ -5,5 +5,5 @@ from .models import Customer
 class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
-        fields = ('login', 'password', 'ip_address',
+        fields = ('id', 'login', 'password', 'ip_address',
                   'mac_address', 'active', 'online', 'balance')
