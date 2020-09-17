@@ -9,7 +9,7 @@ class Customer(models.Model):
     ip_address = models.GenericIPAddressField(
         protocol='IPv4', blank=True, null=True)
     mac_address = models.CharField(max_length=255, blank=True)
-    added = models.DateTimeField(auto_now_add=True)
+    added = models.DateTimeField(default=timezone.now)
     active = models.BooleanField(default=True)
     online = models.BooleanField(default=False)
     # status = enabled, disabled
