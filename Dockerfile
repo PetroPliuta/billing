@@ -61,7 +61,7 @@ COPY . /var/www/billing
 RUN pip3 install -r requirements.txt \
     #&& service dbus restart \
     && apt -y install pkg-config libdbus-1-dev libglib2.0-dev \
-    && pip3 install dbus-python \
+    # && pip3 install dbus-python \
     && service mysql restart \
     && python3 manage.py makemigrations \
     && python3 manage.py migrate \
