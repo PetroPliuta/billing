@@ -78,7 +78,7 @@ RUN cd /etc/freeradius/3.0/ \
     && ln -sr mods-available/billing mods-enabled/ \
     && ln -sr sites-available/billing sites-enabled/ \
     && mkdir billing \
-    && cp mods-config/python/radiusd.py billing/ \ 
+    # && cp mods-config/python/radiusd.py billing/ \ 
     && echo -e "client all{ \n\
     ipaddr = 0.0.0.0/0 \n\
     secret = testing123 \n\
