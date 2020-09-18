@@ -18,10 +18,10 @@ class CustomerAdmin(admin.ModelAdmin):
     form = CustomerForm
 
     def save_model(self, request, obj, form, change):
-        customer = copy.copy(obj)
+        old_object = self.model.objects.get(id=obj.id)
         super().save_model(request, obj, form, change)
         if change:
-            customer.disconnect()
+            old_object.disconnect()
 
     def delete_model(self, request, obj):
         customer = copy.copy(obj)
