@@ -18,7 +18,11 @@ class CustomerAdmin(admin.ModelAdmin):
     form = CustomerForm
 
     def save_model(self, request, obj, form, change):
-        old_object = self.model.objects.get(id=obj.id)
+        try:
+            if change:
+                old_object = self.model.objects.get(id=obj.id)
+        except Exception as ex:
+            print("Cannot get old object:", ex)
         super().save_model(request, obj, form, change)
         if change:
             old_object.disconnect()

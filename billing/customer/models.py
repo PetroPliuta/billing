@@ -9,8 +9,8 @@ class Customer(models.Model):
     password = models.CharField(max_length=255, blank=True)
     email = models.EmailField(max_length=255, blank=True)
     ip_address = models.GenericIPAddressField(
-        protocol='IPv4', blank=True, null=True)
-    mac_address = models.CharField(max_length=255, blank=True)
+        protocol='IPv4', blank=True, null=True, unique=True)
+    mac_address = models.CharField(max_length=255, blank=True, unique=True, null=True)
     added = models.DateTimeField(default=timezone.now)
     active = models.BooleanField(default=True)
     online = models.BooleanField(default=False)
@@ -37,7 +37,8 @@ class Customer(models.Model):
             if router:
                 cmd = "/usr/bin/env radclient {}:3799 disconnect {}".format(
                     router.ip_address, router.secret).split()
-                subprocess.run(cmd, input="User-Name={}".format(self.login), encoding='ascii')
+                subprocess.run(
+                    cmd, input="User-Name={}".format(self.login), encoding='ascii')
         except Exception as ex:
             print("radclient disconnect fail:", ex)
 
