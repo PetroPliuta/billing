@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import Customer, Transaction
 from .forms import CustomerForm
+import copy
 
 
 class CustomerAdmin(admin.ModelAdmin):
@@ -17,18 +18,18 @@ class CustomerAdmin(admin.ModelAdmin):
     form = CustomerForm
 
     def save_model(self, request, obj, form, change):
-        customer = obj
+        customer = copy.copy(obj)
         super().save_model(request, obj, form, change)
         if change:
             customer.disconnect()
 
     def delete_model(self, request, obj):
-        customer = obj
+        customer = copy.copy(obj)
         super().delete_model(request, obj)
         customer.disconnect()
 
     def delete_queryset(self, request, queryset):
-        customers = queryset
+        customers = copy.copy(queryset)
         queryset.delete()
         for obj in customers:
             obj.disconnect()
