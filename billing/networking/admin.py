@@ -4,8 +4,8 @@ from .forms import RouterForm
 
 
 class RouterAdmin(admin.ModelAdmin):
-    list_display = ('id', 'ip_address')
-    list_display_links = ('id', 'ip_address')
+    list_display = ('ip_address', )
+    list_display_links = ('ip_address', )
     search_fields = ('ip_address', )
     ordering = ("id",)
     form = RouterForm
