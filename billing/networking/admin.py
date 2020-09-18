@@ -23,7 +23,7 @@ class RouterAdmin(admin.ModelAdmin):
                 customer.disconnect()
 
     def delete_model(self, request, obj):
-        customers = copy.copy(Customer.objects.filter(last_online_router=obj))
+        customers = copy.deepcopy(Customer.objects.filter(last_online_router=obj))
         super().delete_model(request, obj)
         Router.generate_config()
         Router.restart_radius()
@@ -31,7 +31,7 @@ class RouterAdmin(admin.ModelAdmin):
             customer.disconnect()
 
     def delete_queryset(self, request, queryset):
-        customers = copy.copy(Customer.objects.filter(last_online_router__in=queryset))
+        customers = copy.deepcopy(Customer.objects.filter(last_online_router__in=queryset))
         queryset.delete()
         Router.generate_config()
         Router.restart_radius()
