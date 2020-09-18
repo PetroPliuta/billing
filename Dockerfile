@@ -83,7 +83,8 @@ RUN cd /etc/freeradius/3.0/ \
     && ln -sr sites-available/billing sites-enabled/ \
     && mkdir billing \
     # && cp mods-config/python/radiusd.py billing/ \ 
-    && echo '$INCLUDE /var/www/billing/config/radius_clients.conf' >> /etc/freeradius/3.0/clients.conf
+    && echo '$INCLUDE /var/www/billing/config/radius_clients.conf' >> /etc/freeradius/3.0/clients.conf \
+    && touch /var/www/billing/config/radius_clients.conf
 COPY docker/freeradius/billing/* /etc/freeradius/3.0/billing/
 
 #clean
