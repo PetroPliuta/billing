@@ -83,11 +83,7 @@ RUN cd /etc/freeradius/3.0/ \
     && ln -sr sites-available/billing sites-enabled/ \
     && mkdir billing \
     # && cp mods-config/python/radiusd.py billing/ \ 
-    && echo -e "client all{ \n\
-    ipaddr = 0.0.0.0/0 \n\
-    secret = testing123 \n\
-    virtual_server = billing \n\
-    } \n " >> /etc/freeradius/3.0/clients.conf
+    && echo '$INCLUDE /var/www/billing/config/radius_clients.conf' >> /etc/freeradius/3.0/clients.conf
 COPY docker/freeradius/billing/* /etc/freeradius/3.0/billing/
 
 #clean
