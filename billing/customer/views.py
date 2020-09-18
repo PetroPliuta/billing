@@ -5,8 +5,8 @@ from django.shortcuts import render
 from django_filters.rest_framework import DjangoFilterBackend
 
 
-def index(request):
-    return render(request, "customers/index.html")
+# def index(request):
+#     return render(request, "customers/index.html")
 
 
 class CustomerViewSet(viewsets.ModelViewSet):

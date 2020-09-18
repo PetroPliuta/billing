@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from billing.networking.models import Router
+from billing.tariff.models import InternetTariff
 import subprocess
 
 
@@ -8,10 +9,12 @@ class Customer(models.Model):
     login = models.CharField(max_length=255, unique=True)
     password = models.CharField(max_length=255, blank=True)
     email = models.EmailField(max_length=255, blank=True)
+    tariff = models.ForeignKey(
+        to=InternetTariff, on_delete=models.SET_NULL, blank=True, null=True)
     ip_address = models.GenericIPAddressField(
         protocol='IPv4', blank=True, null=True, unique=True)
-    mac_address = models.CharField(max_length=255, blank=True, unique=True, null=True)
-    added = models.DateTimeField(default=timezone.now)
+    mac_address = models.CharField(
+        max_length=255, blank=True, unique=True, null=True)
     active = models.BooleanField(default=True)
     online = models.BooleanField(default=False)
     last_online_datetime = models.DateTimeField(blank=True, null=True)
@@ -20,6 +23,7 @@ class Customer(models.Model):
     last_online_router = models.ForeignKey(
         to=Router, on_delete=models.SET_NULL, null=True)
     description = models.TextField(blank=True, max_length=10**4)
+    added = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.login
@@ -30,6 +34,14 @@ class Customer(models.Model):
         for transaction in transactions:
             sum = sum + transaction.amount
         return sum
+
+    def download_speed(self):
+        # tariff = InternetTariff.objects.filter()
+        # print(self.tariff.download_speed_kbps)
+        return self.tariff.download_speed_kbps if self.tariff else 0
+
+    def upload_speed(self):
+        return self.tariff.upload_speed_kbps if self.tariff else 0
 
     def disconnect(self):
         try:

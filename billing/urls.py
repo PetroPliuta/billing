@@ -31,10 +31,9 @@ urlpatterns = [
     # path('', include(router.urls)),
     re_path(r'^api/v1/', include(router.urls)),
     path('admin/', admin.site.urls),
-    path('customer/', include('billing.customer.urls')),
     # # react
     path('', views.index),
-    # re_path(r'^api/v1/', include('rest_framework.urls'))
+    # path('customer/', include('billing.customer.urls')),
 ]
 
 admin.site.site_header = "Billing Administration"
