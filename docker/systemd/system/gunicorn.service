@@ -6,7 +6,7 @@ After=network.target
 User=root
 Group=www-data
 WorkingDirectory=/var/www/billing
-ExecStart=/usr/local/bin/gunicorn --access-logfile - --workers 3 --bind unix:billing.sock billing.wsgi
+ExecStart=/usr/local/bin/gunicorn --reload --log-file /var/log/gunicorn/error.log --capture-output --access-logfile /var/log/gunicorn/access.log --workers 3 --bind unix:billing.sock billing.wsgi
 
 [Install]
 WantedBy=multi-user.target

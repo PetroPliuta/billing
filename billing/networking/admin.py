@@ -2,6 +2,7 @@ from django.contrib import admin
 from .models import Router
 from .forms import RouterForm
 from billing.customer.models import Customer
+import copy
 
 
 class RouterAdmin(admin.ModelAdmin):
@@ -22,7 +23,7 @@ class RouterAdmin(admin.ModelAdmin):
                 customer.disconnect()
 
     def delete_model(self, request, obj):
-        customers = Customer.objects.filter(last_online_router=obj)
+        customers = copy.copy(Customer.objects.filter(last_online_router=obj))
         super().delete_model(request, obj)
         Router.generate_config()
         Router.restart_radius()
@@ -30,7 +31,7 @@ class RouterAdmin(admin.ModelAdmin):
             customer.disconnect()
 
     def delete_queryset(self, request, queryset):
-        customers = Customer.objects.filter(last_online_router__in=queryset)
+        customers = copy.copy(Customer.objects.filter(last_online_router__in=queryset))
         queryset.delete()
         Router.generate_config()
         Router.restart_radius()

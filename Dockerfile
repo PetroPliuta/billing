@@ -71,9 +71,11 @@ RUN apt -y install pkg-config libdbus-1-dev libglib2.0-dev \
 #web
 RUN cp docker/systemd/system/gunicorn.service /etc/systemd/system/ \
     && systemctl enable gunicorn \
+    && mkdir /var/log/gunicorn \
     && cp docker/nginx/sites-available/billing /etc/nginx/sites-available/ \
     && ln -sr /etc/nginx/sites-available/billing /etc/nginx/sites-enabled/ \
     && rm -f /etc/nginx/sites-enabled/default
+COPY docker/logrotate.d/gunicorn /etc/logrotate.d/
 
 #freeradius
 COPY docker/freeradius/mods-available/billing /etc/freeradius/3.0/mods-available/
