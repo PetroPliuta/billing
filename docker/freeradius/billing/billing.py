@@ -16,19 +16,14 @@ def instantiate(p):
 
 
 def authenticate(p):
-    print 'authenticate:', p
+    print '*** authenticate ***'
+    print p
     return radiusd.RLM_MODULE_OK
 
 
 def authorize(p):
     print "*** authorize ***"
-    print
-    radiusd.radlog(radiusd.L_INFO, '*** radlog call in authorize ***')
-    print
-    print p
-    print
-    print "radiusd.config:", radiusd.config
-    print
+    print "NAS request:", p
 
     # NAS
     nas_username = ""
@@ -54,12 +49,20 @@ def authorize(p):
     print "balance:", balance
     if not active or balance < 0:
         return radiusd.RLM_MODULE_REJECT
+    download_speed = api_response[0][u'download_speed']
+    upload_speed = api_response[0][u'upload_speed']
     radius_reply = {
         'Acct-Interim-Interval': '60',
+        'Mikrotik-Rate-Limit': "{}k/{}k".format(upload_speed, download_speed),
     }
     radius_config = {
         'Cleartext-Password': str(api_response[0][u'password'])
     }
+
+    # dhcp
+    if 'User-Password' in from_nas.keys() and from_nas['User-Password'] == '' and radius_config['Cleartext-Password'] == '':
+        radius_config['Cleartext-Password'] = 'dhcp'
+
     ip = str(api_response[0][u'ip_address'])
     if ip:
         print 'ip address:', ip

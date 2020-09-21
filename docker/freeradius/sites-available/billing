@@ -6,6 +6,7 @@ authorize {
         chap
         mschap
 #        eap
+
         pap
 }
 
@@ -14,6 +15,12 @@ authenticate {
             python
         }
         Auth-Type PAP{
+            # dhcp
+            if(User-Password==""){
+                update request{
+                    User-Password:="dhcp"
+                }
+            }
             pap
         }
         Auth-Type CHAP{
