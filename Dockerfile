@@ -95,7 +95,7 @@ RUN unset DEBIAN_FRONTEND \
     && echo 'debconf debconf/frontend select Dialog' | debconf-set-selections \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && rm -rf .git docker env frontend node_modules static toolbox .gitignore .dockerignore db.sqlite3 Dockerfile package* webpack.config.js \
-    && find -iname __pycache__ -exec rm -rf {} \;
+    && find -iname __pycache__ -exec rm -rf {} \; || true
 
 VOLUME [ "/sys/fs/cgroup" ]
 
