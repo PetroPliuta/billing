@@ -8,7 +8,6 @@ import subprocess
 class Customer(models.Model):
     login = models.CharField(max_length=255, unique=True)
     password = models.CharField(max_length=255, blank=True)
-    email = models.EmailField(max_length=255, blank=True)
     tariff = models.ForeignKey(
         to=InternetTariff, on_delete=models.SET_NULL, blank=True, null=True)
     ip_address = models.GenericIPAddressField(
