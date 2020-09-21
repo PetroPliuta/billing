@@ -5,9 +5,10 @@ import copy
 
 
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ('id', 'login', 'ip_address', 'balance', 'active', 'online')
+    list_display = ('id', 'login',  'tariff', 'ip_address',
+                    'balance', 'active', 'online')
     list_display_links = ('login',)
-    list_editable = ('ip_address', 'active')
+    list_editable = ('ip_address', 'active', 'tariff')
     list_filter = ('active', 'online')
     readonly_fields = ('online', 'balance', 'last_online_datetime',
                        'last_online_ip', 'last_online_router')
