@@ -3,3 +3,9 @@
 .idea
 */__pycache__
 */*.pyc
+
+.gitignore
+*/.gitignore*
+
+.dockerignore
+Dockerfile
