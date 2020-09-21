@@ -47,8 +47,8 @@ class TransactionAdmin(admin.ModelAdmin):
     list_display = ('id', 'customer', 'amount', 'date_time', 'system')
     list_display_links = ('customer', 'amount')
     list_filter = ('customer',)
-    ordering = ("id",)
-    readonly_fields = 'system',
+    ordering = ('id',)
+    readonly_fields = 'system', 'date_time'
 
 
 admin.site.register(Transaction, TransactionAdmin)
