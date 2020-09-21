@@ -37,10 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'django_filters',
     'billing.customer',
     'billing.networking',
     'billing.tariff',
-    'django_filters',
+    'billing.cron',
 ]
 
 MIDDLEWARE = [

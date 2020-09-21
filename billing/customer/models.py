@@ -36,8 +36,6 @@ class Customer(models.Model):
         return sum
 
     def download_speed(self):
-        # tariff = InternetTariff.objects.filter()
-        # print(self.tariff.download_speed_kbps)
         return self.tariff.download_speed_kbps if self.tariff else 0
 
     def upload_speed(self):
@@ -53,6 +51,14 @@ class Customer(models.Model):
                     cmd, input="User-Name={}".format(self.login), encoding='ascii')
         except Exception as ex:
             print("radclient disconnect fail:", ex)
+
+    def create_tariff_transaction(self):
+        try:
+            transaction = Transaction(
+                customer=self, amount=-self.tariff.price, date_time=timezone.now(), comment="System transaction. Tariff plan '{}'".format(self.tariff.title))
+            transaction.save()
+        except Exception as ex:
+            print("create_tariff_transaction error:", ex)
 
 
 class Transaction(models.Model):
