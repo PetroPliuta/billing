@@ -12,8 +12,9 @@ class RouterAdmin(admin.ModelAdmin):
     form = RouterForm
 
     def save_model(self, request, obj, form, change):
+        old_object = self.model.objects.get(id=obj.id)
         if change:
-            customers = Customer.objects.filter(last_online_router=obj)
+            customers = Customer.objects.filter(last_online_router=old_object)
         super().save_model(request, obj, form, change)
         Router.generate_config()
         Router.restart_radius()
