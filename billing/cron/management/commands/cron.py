@@ -31,7 +31,7 @@ class Command(BaseCommand):
     def tariff_transactions(self):
         try:
             day_of_month = timezone.now().day
-            if day_of_month != 21:
+            if day_of_month != 1:
                 return
             customers = Customer.objects.filter(tariff__isnull=False)
             for customer in customers:

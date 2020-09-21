@@ -59,14 +59,14 @@ RUN service mysql restart \
 WORKDIR /var/www/billing
 COPY . /var/www/billing
 RUN apt -y install pkg-config libdbus-1-dev libglib2.0-dev \
-    # && service dbus restart \
     && pip3 install -r requirements.txt \
-    # && pip3 install dbus-python \
     && service mysql restart \
     && python3 manage.py makemigrations \
     && python3 manage.py migrate \
     && echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@billing.com', 'admin')" | python3 manage.py shell \
     && python3 manage.py collectstatic
+COPY docker/cron.d/billing /etc/cron.d/
+COPY docker/logrotate.d/* /etc/logrotate.d/
 
 #web
 RUN cp docker/systemd/system/gunicorn.service /etc/systemd/system/ \
@@ -75,7 +75,7 @@ RUN cp docker/systemd/system/gunicorn.service /etc/systemd/system/ \
     && cp docker/nginx/sites-available/billing /etc/nginx/sites-available/ \
     && ln -sr /etc/nginx/sites-available/billing /etc/nginx/sites-enabled/ \
     && rm -f /etc/nginx/sites-enabled/default
-COPY docker/logrotate.d/gunicorn /etc/logrotate.d/
+# COPY docker/logrotate.d/gunicorn /etc/logrotate.d/
 
 #freeradius
 COPY docker/freeradius/mods-available/billing /etc/freeradius/3.0/mods-available/
@@ -84,14 +84,12 @@ RUN cd /etc/freeradius/3.0/ \
     && ln -sr mods-available/billing mods-enabled/ \
     && ln -sr sites-available/billing sites-enabled/ \
     && mkdir billing \
-    # && cp mods-config/python/radiusd.py billing/ \ 
     && echo '$INCLUDE /var/www/billing/config/radius_clients.conf' >> /etc/freeradius/3.0/clients.conf \
     && touch /var/www/billing/config/radius_clients.conf
 COPY docker/freeradius/billing/* /etc/freeradius/3.0/billing/
 
 #clean
-RUN \
-    unset DEBIAN_FRONTEND \
+RUN unset DEBIAN_FRONTEND \
     && unset RUNLEVEL \
     && echo 'debconf debconf/frontend select Dialog' | debconf-set-selections \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
