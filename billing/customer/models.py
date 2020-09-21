@@ -40,9 +40,8 @@ class Customer(models.Model):
     def upload_speed(self):
         return self.tariff.upload_speed_kbps if self.tariff else 0
 
-    def disconnect(self):
+    def disconnect(self, router=last_online_router):
         try:
-            router = self.last_online_router
             if router:
                 cmd = "echo 'User-Name={}' | /usr/bin/env radclient {}:3799 disconnect {} &"\
                     .format(self.login, router.ip_address, router.secret)

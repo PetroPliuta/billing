@@ -13,14 +13,14 @@ class RouterAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         if change:
-            old_object = self.model.objects.get(id=obj.id)
-            customers = Customer.objects.filter(last_online_router=old_object)
+            old_router = self.model.objects.get(id=obj.id)
+            customers = Customer.objects.filter(last_online_router=old_router)
         super().save_model(request, obj, form, change)
         Router.generate_config()
         Router.restart_radius()
         if change:
             for customer in customers:
-                customer.disconnect()
+                customer.disconnect(old_router)
 
     def delete_model(self, request, obj):
         # TODO: disconnect customers
