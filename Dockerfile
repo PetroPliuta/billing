@@ -36,13 +36,13 @@ RUN apt-get install -y systemd systemd-sysv \
     /lib/systemd/system/plymouth* \
     /lib/systemd/system/systemd-update-utmp* \
     #install useful tools
-    && apt-get install -y command-not-found bash-completion ntpdate
+    && apt-get install -y command-not-found bash-completion ntpdate mc
 
 #deb packets
 RUN apt-get -y install nginx freeradius \
     mysql-server libmysqlclient-dev \
     python3-pip python-requests \
-    # python3-dev build-essential \
+    cron logrotate rsyslog \
     && systemctl enable freeradius
 
 # 'echo -e' works
@@ -58,15 +58,16 @@ RUN service mysql restart \
 #billing
 WORKDIR /var/www/billing
 COPY . /var/www/billing
+COPY docker/cron.d/billing /etc/cron.d/
+COPY docker/logrotate.d/* /etc/logrotate.d/
 RUN apt -y install pkg-config libdbus-1-dev libglib2.0-dev \
     && pip3 install -r requirements.txt \
     && service mysql restart \
     && python3 manage.py makemigrations \
     && python3 manage.py migrate \
     && echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@billing.com', 'admin')" | python3 manage.py shell \
-    && python3 manage.py collectstatic
-COPY docker/cron.d/billing /etc/cron.d/
-COPY docker/logrotate.d/* /etc/logrotate.d/
+    && python3 manage.py collectstatic \
+    && chmod g-w /etc/cron.d/billing
 
 #web
 RUN cp docker/systemd/system/gunicorn.service /etc/systemd/system/ \
