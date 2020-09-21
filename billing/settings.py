@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'billing.customer',
     'billing.networking',
+    'billing.tariff',
     'django_filters',
 ]
 
