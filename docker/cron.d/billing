@@ -1,2 +1,3 @@
-* * * * * root /usr/bin/env python3 /var/www/billing/manage.py cron minutely >>/var/www/billing/log/cron.log  2>&1
-1 0 * * * root /usr/bin/env python3 /var/www/billing/manage.py cron daily >>/var/www/billing/log/cron.log  2>&1
+1 0 * * * root /usr/bin/env python3 /var/www/billing/manage.py cron daily >>/var/www/billing/log/cron.log 2>&1
+1 * * * * root /usr/bin/env python3 /var/www/billing/manage.py cron hourly >>/var/www/billing/log/cron.log 2>&1
+* * * * * root /usr/bin/env python3 /var/www/billing/manage.py cron minutely >>/var/www/billing/log/cron.log 2>&1

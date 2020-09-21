@@ -6,7 +6,7 @@ from billing.customer.models import Customer
 class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('period', choices=(
-            'minutely', 'daily'), help='Cron period')
+            'daily', 'hourly', 'minutely'), help='Cron period')
 
     def handle(self, *args, **options):
         try:
@@ -16,6 +16,8 @@ class Command(BaseCommand):
 
     def daily(self):
         self.tariff_transactions()
+
+    def hourly(self):
         self.disconnect_customers()
 
     def minutely(self):
@@ -41,7 +43,7 @@ class Command(BaseCommand):
 
     def disconnect_customers(self):
         try:
-            customers = Customer.objects.filter()
+            customers = Customer.objects.all()
             for customer in customers:
                 if customer.balance() < 0:
                     customer.disconnect()

@@ -54,9 +54,20 @@ class Customer(models.Model):
 
     def create_tariff_transaction(self):
         try:
+            current_date = timezone.now().date()
+            transactions = Transaction.objects.filter(
+                customer=self, system=True, date_time__date=current_date)
+            if len(transactions):
+                raise Exception("Something wrong, system transaction for customer '{}' on date '{}' already present".format(
+                    self.login, current_date))
             transaction = Transaction(
-                customer=self, amount=-self.tariff.price, date_time=timezone.now(), comment="System transaction. Tariff plan '{}'".format(self.tariff.title))
+                customer=self, amount=-self.tariff.price, date_time=timezone.now(),
+                comment="Monthly transaction for tariff plan '{}'".format(
+                    self.tariff.title),
+                system=True)
             transaction.save()
+            if self.balance() < 0:
+                self.disconnect()
         except Exception as ex:
             print("create_tariff_transaction error:", ex)
 
@@ -66,6 +77,7 @@ class Transaction(models.Model):
     amount = models.DecimalField(max_digits=12, decimal_places=2)
     date_time = models.DateTimeField(default=timezone.now)
     comment = models.TextField(blank=True, max_length=10**3)
+    system = models.BooleanField("System transaction", default=False)
 
     def __str__(self):
         return str(self.id) + ' ' + str(self.date_time)
