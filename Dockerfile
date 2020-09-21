@@ -67,7 +67,8 @@ RUN apt -y install pkg-config libdbus-1-dev libglib2.0-dev \
     && python3 manage.py migrate \
     && echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@billing.com', 'admin')" | python3 manage.py shell \
     && python3 manage.py collectstatic \
-    && chmod g-w /etc/cron.d/billing
+    && chmod 0644 /etc/cron.d/billing \
+    && chmod 0644 /etc/logrotate.d/*
 
 #web
 RUN cp docker/systemd/system/gunicorn.service /etc/systemd/system/ \
