@@ -27,9 +27,10 @@ class CustomerAdmin(admin.ModelAdmin):
             print("Cannot get old object:", ex)
         super().save_model(request, obj, form, change)
         if change:
-            print("old: ", old_object.ip_address,
-                  old_object.login, old_object.password, obj.password)
-            print("new: ", obj.ip_address, obj.login, obj.active)
+            print(
+                f"old: ip:'{old_object.ip_address}', login:'{old_object.login}', pass:'{old_object.password}'")
+            print(
+                f"new: ip:'{obj.ip_address}',        login:'{obj.login}',        pass:'{obj.password}', active:'{obj.active}'")
             if old_object.ip_address != obj.ip_address or \
                     old_object.login != obj.login or \
                     old_object.password != obj.password or \
