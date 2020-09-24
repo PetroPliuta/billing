@@ -33,18 +33,18 @@ class CustomerAdmin(admin.ModelAdmin):
             print("Cannot get old object:", ex)
         super().save_model(request, obj, form, change)
         if change:
-            print(
-                f"old: ip:'{old_object.ip_address}', login:'{old_object.login}', pass:'{old_object.password}'")
-            print(
-                f"new: ip:'{obj.ip_address}',        login:'{obj.login}',        pass:'{obj.password}', active:'{obj.active}'")
-            print(
-                f"ip_changed:{ip_changed(old_object.ip_address, obj.ip_address)}")
+            # print(
+            #     f"old: ip:'{old_object.ip_address}', login:'{old_object.login}', pass:'{old_object.password}'")
+            # print(
+            #     f"new: ip:'{obj.ip_address}',        login:'{obj.login}',        pass:'{obj.password}', active:'{obj.active}'")
+            # print(
+            #     f"ip_changed:{ip_changed(old_object.ip_address, obj.ip_address)}")
             if ip_changed(old_object.ip_address, obj.ip_address) or \
                     old_object.login != obj.login or \
                     old_object.password != obj.password or \
                     not obj.active:
                 old_object.disconnect()
-            if old_object.tariff != obj.tariff:
+            elif old_object.tariff != obj.tariff:
                 obj.CoA()
 
     def delete_model(self, request, obj):
