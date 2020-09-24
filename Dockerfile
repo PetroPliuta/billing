@@ -14,9 +14,9 @@ RUN \
     && apt-get update \
     && apt-get install -y apt-utils debconf-utils \
     && echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections \
-    && apt-get install -y dialog
+    && apt-get install -y dialog \
 #Systemd
-RUN apt-get install -y systemd systemd-sysv \
+    && apt-get install -y systemd systemd-sysv \
     #fix hostnamectl
     && apt-get install -y dbus \
     #systemd fixes
@@ -33,21 +33,16 @@ RUN apt-get install -y systemd systemd-sysv \
     /lib/systemd/system/plymouth* \
     /lib/systemd/system/systemd-update-utmp* \
     #install useful tools
-    && apt-get install -y command-not-found bash-completion ntpdate mc
-
+    && apt-get install -y command-not-found bash-completion ntpdate mc \
 #deb packets
-RUN apt-get -y install nginx freeradius \
+    && apt-get -y install nginx freeradius \
     mysql-server libmysqlclient-dev \
     python3-pip python-requests \
     cron logrotate rsyslog \
-    && systemctl enable freeradius
-
-# 'echo -e' works
-SHELL ["/bin/bash","-c"]
-
+    && systemctl enable freeradius \
 #mysql
-RUN service mysql restart \
-    && echo -e "create database billing character set utf8 COLLATE utf8_general_ci; \
+    && service mysql restart \
+    && echo "create database billing character set utf8 COLLATE utf8_general_ci; \
     CREATE USER 'django'@'%' IDENTIFIED BY 'password'; \
     GRANT ALL PRIVILEGES ON billing.* TO 'django'@'%'; \
     FLUSH PRIVILEGES; " | mysql
@@ -60,10 +55,11 @@ COPY docker/logrotate.d/* /etc/logrotate.d/
 RUN apt -y install pkg-config libdbus-1-dev libglib2.0-dev \
     && pip3 install -r requirements.txt \
     && service mysql restart \
-    && python3 manage.py makemigrations \
-    && python3 manage.py migrate \
-    && echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@billing.com', 'admin')" | python3 manage.py shell \
-    && python3 manage.py collectstatic \
+    && python3 -B manage.py makemigrations \
+    && python3 -B manage.py migrate \
+    && echo "from django.contrib.auth import get_user_model; User = get_user_model(); \
+    User.objects.create_superuser('admin', 'admin@billing.com', 'admin')" | python3 -B manage.py shell \
+    && python3 -B manage.py collectstatic \
     && chmod 0644 /etc/cron.d/billing \
     && chmod 0644 /etc/logrotate.d/*
 
@@ -74,7 +70,6 @@ RUN cp docker/systemd/system/gunicorn.service /etc/systemd/system/ \
     && cp docker/nginx/sites-available/billing /etc/nginx/sites-available/ \
     && ln -sr /etc/nginx/sites-available/billing /etc/nginx/sites-enabled/ \
     && rm -f /etc/nginx/sites-enabled/default
-# COPY docker/logrotate.d/gunicorn /etc/logrotate.d/
 
 #freeradius
 COPY docker/freeradius/mods-available/billing /etc/freeradius/3.0/mods-available/
