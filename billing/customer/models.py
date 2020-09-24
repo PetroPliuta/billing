@@ -46,19 +46,20 @@ class Customer(models.Model):
         return self.tariff.upload_speed_kbps if self.tariff else 0
 
     def disconnect(self, router=None):
-        if not router:
-            router = self.last_online_router
+        router_ = router or self.last_online_router
         try:
-            cmd = f"echo 'User-Name=\'{self.login}\'' | /usr/bin/env radclient {router.ip_address}:3799 disconnect \'{router.secret}\' &"
-            subprocess.Popen(cmd, shell=True)
+            if router_:
+                cmd = f"echo 'User-Name=\'{self.login}\'' | /usr/bin/env radclient {router_.ip_address}:3799 disconnect \'{router_.secret}\' &"
+                subprocess.Popen(cmd, shell=True)
         except Exception as ex:
             print("radclient disconnect fail:", ex)
 
     def CoA(self):
         try:
-            cmd = f"echo 'User-Name=\'{self.login}\', Mikrotik-Rate-Limit=\'{self.upload_speed()}k/{self.download_speed()}k\'' |\
-                     /usr/bin/env radclient {self.last_online_router.ip_address}:3799 coa {self.last_online_router.secret} &"
-            subprocess.Popen(cmd, shell=True)
+            if self.last_online_router:
+                cmd = f"echo 'User-Name=\'{self.login}\', Mikrotik-Rate-Limit=\'{self.upload_speed()}k/{self.download_speed()}k\'' |\
+                        /usr/bin/env radclient {self.last_online_router.ip_address}:3799 coa \'{self.last_online_router.secret}\' &"
+                subprocess.Popen(cmd, shell=True)
         except Exception as ex:
             print("radclient CoA fail:", ex)
 
