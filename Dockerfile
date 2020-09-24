@@ -5,8 +5,8 @@ ENV container=docker LC_ALL=C RUNLEVEL=5
 #Prepare
 RUN \
     #do not ask questions during apt-get install
-    export DEBIAN_FRONTEND="noninteractive"; \
-    sed -i 's/# deb/deb/g' /etc/apt/sources.list \
+    export DEBIAN_FRONTEND="noninteractive" \
+    && sed -i 's/# deb/deb/g' /etc/apt/sources.list \
     #allow work with services
     && rm -f /usr/sbin/policy-rc.d \
     && dpkg-divert --remove /sbin/initctl \
