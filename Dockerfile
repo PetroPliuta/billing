@@ -54,7 +54,7 @@ COPY . /var/www/billing
 COPY docker/ /
 RUN cd /var/www/billing \
     && pip3 install -r requirements.txt \
-    && RUNLEVEL=5 service mysql restart \
+    && /etc/init.d/mysql start \
     && python3 -B manage.py makemigrations \
     && python3 -B manage.py migrate \
     && echo "from django.contrib.auth import get_user_model; User = get_user_model(); \

@@ -13,7 +13,8 @@
 ### Features:
 
 - Settings in admin
-- Accounting interval
+  - Accounting interval
+  - Show password in password field (on field focus). JS (?)
 - Timezone set/check/fix
 - Send CoA RADIUS packet when tariff changed (optionally)
 - Create customer services instead of a customer
