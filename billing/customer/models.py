@@ -54,7 +54,12 @@ class Customer(models.Model):
             print("radclient disconnect fail:", ex)
 
     def CoA(self):
-        pass
+        try:
+            cmd = f"echo 'User-Name={self.login} 'Mikrotik-Rate-Limit': '{self.upload_speed()}k/{self.download_speed()}k'' |\
+                     /usr/bin/env radclient {self.last_online_router.ip_address}:3799 coa {self.last_online_router.secret} &"
+            subprocess.Popen(cmd, shell=True)
+        except Exception as ex:
+            print("radclient CoA fail:", ex)
 
     def create_tariff_transaction(self):
         try:

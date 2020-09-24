@@ -27,7 +27,13 @@ class CustomerAdmin(admin.ModelAdmin):
             print("Cannot get old object:", ex)
         super().save_model(request, obj, form, change)
         if change:
-            old_object.disconnect()
+            if old_object.ip_address != obj.ip_address or \
+                    old_object.login != obj.login or \
+                    old_object.password != obj.password or \
+                    not obj.active:
+                old_object.disconnect()
+            if old_object.tariff != obj.tariff:
+                obj.CoA()
 
     def delete_model(self, request, obj):
         customer = copy.copy(obj)
