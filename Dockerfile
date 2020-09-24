@@ -4,7 +4,7 @@ ENV container=docker LC_ALL=C RUNLEVEL=5
 
 #Prepare
 RUN \
-    #do not ask questions during apt install
+    #do not ask questions during apt-get install
     export DEBIAN_FRONTEND="noninteractive"; \
     sed -i 's/# deb/deb/g' /etc/apt/sources.list \
     #allow work with services
@@ -15,7 +15,7 @@ RUN \
     && apt-get install -y apt-utils debconf-utils \
     && echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections \
     && apt-get install -y dialog \
-#Systemd
+    #Systemd
     && apt-get install -y systemd systemd-sysv \
     #fix hostnamectl
     && apt-get install -y dbus \
@@ -34,27 +34,27 @@ RUN \
     /lib/systemd/system/systemd-update-utmp* \
     #install useful tools
     && apt-get install -y command-not-found bash-completion ntpdate mc \
-#deb packets
+    #deb packets
     && apt-get -y install nginx freeradius \
     mysql-server libmysqlclient-dev \
     python3-pip python-requests \
     cron logrotate rsyslog \
     && systemctl enable freeradius \
-#mysql
+    #mysql
     && service mysql restart \
     && echo "create database billing character set utf8 COLLATE utf8_general_ci; \
     CREATE USER 'django'@'%' IDENTIFIED BY 'password'; \
     GRANT ALL PRIVILEGES ON billing.* TO 'django'@'%'; \
-    FLUSH PRIVILEGES; " | mysql
+    FLUSH PRIVILEGES; " | mysql \
+    #billing. for dbus-python
+    && apt-get -y install pkg-config libdbus-1-dev libglib2.0-dev
 
 #billing
-WORKDIR /var/www/billing
 COPY . /var/www/billing
-COPY docker/cron.d/billing /etc/cron.d/
-COPY docker/logrotate.d/* /etc/logrotate.d/
-RUN apt -y install pkg-config libdbus-1-dev libglib2.0-dev \
+COPY docker/ /
+RUN cd /var/www/billing \
     && pip3 install -r requirements.txt \
-    && service mysql restart \
+    && RUNLEVEL=5 service mysql restart \
     && python3 -B manage.py makemigrations \
     && python3 -B manage.py migrate \
     && echo "from django.contrib.auth import get_user_model; User = get_user_model(); \
@@ -64,29 +64,24 @@ RUN apt -y install pkg-config libdbus-1-dev libglib2.0-dev \
     && chmod 0644 /etc/logrotate.d/*
 
 #web
-RUN cp docker/systemd/system/gunicorn.service /etc/systemd/system/ \
-    && systemctl enable gunicorn \
+RUN systemctl enable gunicorn \
     && mkdir /var/log/gunicorn \
-    && cp docker/nginx/sites-available/billing /etc/nginx/sites-available/ \
     && ln -sr /etc/nginx/sites-available/billing /etc/nginx/sites-enabled/ \
     && rm -f /etc/nginx/sites-enabled/default
 
 #freeradius
-COPY docker/freeradius/mods-available/billing /etc/freeradius/3.0/mods-available/
-COPY docker/freeradius/sites-available/billing /etc/freeradius/3.0/sites-available/
 RUN cd /etc/freeradius/3.0/ \
     && ln -sr mods-available/billing mods-enabled/ \
     && ln -sr sites-available/billing sites-enabled/ \
-    && mkdir billing \
     && echo '$INCLUDE /var/www/billing/config/radius_clients.conf' >> /etc/freeradius/3.0/clients.conf \
     && touch /var/www/billing/config/radius_clients.conf
-COPY docker/freeradius/billing/* /etc/freeradius/3.0/billing/
 
 #clean
 RUN unset DEBIAN_FRONTEND \
     && unset RUNLEVEL \
     && echo 'debconf debconf/frontend select Dialog' | debconf-set-selections \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && cd /var/www/billing \
     && rm -rf .git docker env frontend node_modules static toolbox .gitignore .dockerignore db.sqlite3 Dockerfile package* webpack.config.js \
     && find -iname __pycache__ -exec rm -rf {} \; || true
 
