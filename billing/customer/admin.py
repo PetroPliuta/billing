@@ -25,7 +25,7 @@ class CustomerAdmin(admin.ModelAdmin):
                 ip1 = ''
             if ip2 == None:
                 ip2 == ''
-            return ip1 == ip2
+            return ip1 != ip2
         try:
             if change:
                 old_object = self.model.objects.get(id=obj.id)
