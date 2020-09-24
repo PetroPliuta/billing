@@ -1,9 +1,16 @@
 /config/*
+/env
+/frontend
+/node_modules
 /log/*
-.idea
-*/__pycache__
-*/*.pyc
+/db.sqlite3
+/package*
+/webpack*
+/TODO*
 
+.idea
+*/__pycache__*
+*/*.pyc
 .gitignore
 */.gitignore*
 
