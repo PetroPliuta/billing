@@ -15,7 +15,7 @@ class CustomerAdmin(admin.ModelAdmin):
                        'last_online_ip', 'last_online_router')
     save_as = True
     save_as_continue = False
-    search_fields = ('login', 'ip_address', 'email')
+    search_fields = ('login', 'ip_address')
     ordering = ("id",)
     form = CustomerForm
 
