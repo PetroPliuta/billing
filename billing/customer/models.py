@@ -48,11 +48,13 @@ class Customer(models.Model):
     def disconnect(self, router=last_online_router):
         try:
             if router:
-                cmd = "echo 'User-Name={}' | /usr/bin/env radclient {}:3799 disconnect {} &"\
-                    .format(self.login, router.ip_address, router.secret)
+                cmd = f"echo 'User-Name={self.login}' | /usr/bin/env radclient {router.ip_address}:3799 disconnect {router.secret} &"
                 subprocess.Popen(cmd, shell=True)
         except Exception as ex:
             print("radclient disconnect fail:", ex)
+
+    def CoA(self):
+        pass
 
     def create_tariff_transaction(self):
         try:
@@ -60,12 +62,11 @@ class Customer(models.Model):
             transactions = Transaction.objects.filter(
                 customer=self, system=True, date_time__date=current_date)
             if len(transactions):
-                raise Exception("Something wrong, system transaction for customer '{}' on date '{}' already present".format(
-                    self.login, current_date))
+                raise Exception(
+                    f"Something wrong, system transaction for customer '{self.login}' on date '{current_date}' already present")
             transaction = Transaction(
                 customer=self, amount=-self.tariff.price, date_time=timezone.now(),
-                comment="Monthly transaction for tariff plan '{}'".format(
-                    self.tariff.title),
+                comment=f"Monthly transaction for tariff plan '{self.tariff.title}'",
                 system=True)
             transaction.save()
             if self.balance() < 0:

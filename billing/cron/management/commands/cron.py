@@ -26,7 +26,7 @@ class Command(BaseCommand):
             now = timezone.now()
             if (now-customer.last_online_datetime).total_seconds() > 120:
                 self.stdout.write(
-                    "'{}' - offline".format(customer.login))
+                    f"'{customer.login}' - offline")
                 customer.online = False
                 customer.save()
 

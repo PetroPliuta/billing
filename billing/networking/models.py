@@ -23,12 +23,12 @@ class Router(models.Model):
         routers = Router.objects.all()
         with open(radius_clients_file, 'w') as f:
             for router in routers:
-                router_config = """client {ip} {{
-    ipaddr = {ip}
-    secret = {secret}
+                router_config = f"""client {router.ip_address} {{
+    ipaddr = {router.ip_address}
+    secret = {router.secret}
     virtual_server = billing
 }}
-""".format(ip=router.ip_address, secret=router.secret)
+"""
                 f.write(router_config)
 
     @staticmethod
