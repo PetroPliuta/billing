@@ -46,9 +46,9 @@ class Customer(models.Model):
         return self.tariff.upload_speed_kbps if self.tariff else 0
 
     def disconnect(self, router=last_online_router):
+        print("router:", router)
         try:
             if router:
-                print(router)
                 cmd = f"echo 'User-Name=\'{self.login}\'' | /usr/bin/env radclient {router.ip_address}:3799 disconnect {router.secret} &"
                 subprocess.Popen(cmd, shell=True)
         except Exception as ex:
@@ -56,7 +56,7 @@ class Customer(models.Model):
 
     def CoA(self):
         try:
-            cmd = f"echo 'User-Name=\'{self.login}\', Mikrotik-Rate-Limit=\'{self.upload_speed()}k/{self.download_speed()}k\' |\
+            cmd = f"echo 'User-Name=\'{self.login}\', Mikrotik-Rate-Limit=\'{self.upload_speed()}k/{self.download_speed()}k\'' |\
                      /usr/bin/env radclient {self.last_online_router.ip_address}:3799 coa {self.last_online_router.secret} &"
             subprocess.Popen(cmd, shell=True)
         except Exception as ex:
