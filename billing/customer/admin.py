@@ -20,6 +20,12 @@ class CustomerAdmin(admin.ModelAdmin):
     form = CustomerForm
 
     def save_model(self, request, obj, form, change):
+        def ip_changed(ip1, ip2):
+            if ip1 == None:
+                ip1 = ''
+            if ip2 == None:
+                ip2 == ''
+            return ip1 == ip2
         try:
             if change:
                 old_object = self.model.objects.get(id=obj.id)
@@ -31,7 +37,9 @@ class CustomerAdmin(admin.ModelAdmin):
                 f"old: ip:'{old_object.ip_address}', login:'{old_object.login}', pass:'{old_object.password}'")
             print(
                 f"new: ip:'{obj.ip_address}',        login:'{obj.login}',        pass:'{obj.password}', active:'{obj.active}'")
-            if old_object.ip_address != obj.ip_address or \
+            print(
+                f"ip_changed:{ip_changed(old_object.ip_address, obj.ip_address)}")
+            if ip_changed(old_object.ip_address, obj.ip_address) or \
                     old_object.login != obj.login or \
                     old_object.password != obj.password or \
                     not obj.active:
