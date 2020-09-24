@@ -41,7 +41,7 @@ RUN \
     cron logrotate rsyslog \
     && systemctl enable freeradius \
     #mysql
-    && service mysql restart \
+    && /etc/init.d/mysql start \
     && echo "create database billing character set utf8 COLLATE utf8_general_ci; \
     CREATE USER 'django'@'%' IDENTIFIED BY 'password'; \
     GRANT ALL PRIVILEGES ON billing.* TO 'django'@'%'; \
