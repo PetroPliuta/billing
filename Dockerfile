@@ -41,7 +41,7 @@ RUN \
     cron logrotate rsyslog \
     && systemctl enable freeradius \
     #mysql
-    && /etc/init.d/mysql start \
+    && /etc/init.d/mysql restart \
     && echo "create database billing character set utf8 COLLATE utf8_general_ci; \
     CREATE USER 'django'@'%' IDENTIFIED BY 'password'; \
     GRANT ALL PRIVILEGES ON billing.* TO 'django'@'%'; \
@@ -54,7 +54,7 @@ COPY . /var/www/billing
 COPY docker/ /
 RUN cd /var/www/billing \
     && pip3 install -r requirements.txt \
-    && /etc/init.d/mysql start \
+    && /etc/init.d/mysql restart \
     && python3 -B manage.py makemigrations \
     && python3 -B manage.py migrate \
     && echo "from django.contrib.auth import get_user_model; User = get_user_model(); \
