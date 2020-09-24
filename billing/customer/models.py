@@ -3,17 +3,22 @@ from django.utils import timezone
 from billing.networking.models import Router
 from billing.tariff.models import InternetTariff
 import subprocess
+from random import randint
+
+
+def rand_name():
+    return "Customer #"+str(randint(1000, 9999))
 
 
 class Customer(models.Model):
-    login = models.CharField(max_length=255, unique=True)
-    password = models.CharField(max_length=255, blank=True)
+    full_name = models.CharField(
+        max_length=255, default=rand_name)
+    login = models.CharField(max_length=255, unique=True, default='user')
+    password = models.CharField(max_length=255, blank=True, default='pass')
     tariff = models.ForeignKey(
         to=InternetTariff, on_delete=models.SET_NULL, blank=True, null=True)
     ip_address = models.GenericIPAddressField(
         protocol='IPv4', blank=True, null=True, unique=True)
-    mac_address = models.CharField(
-        max_length=255, blank=True, unique=True, null=True)
     active = models.BooleanField(default=True)
     online = models.BooleanField(default=False)
     last_online_datetime = models.DateTimeField(blank=True, null=True)

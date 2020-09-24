@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.auth.models import Group
 from .models import Customer, Transaction
 from .forms import CustomerForm
 import copy
@@ -52,3 +53,4 @@ class TransactionAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Transaction, TransactionAdmin)
+admin.site.unregister(Group)
