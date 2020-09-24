@@ -1,14 +1,11 @@
 FROM ubuntu:18.04
 
-ENV container=docker LC_ALL=C
+ENV container=docker LC_ALL=C RUNLEVEL=5
 
 #Prepare
 RUN \
     #do not ask questions during apt install
-    DEBIAN_FRONTEND="noninteractive"; \
-    #allow start redis-server, mysql-server
-    export RUNLEVEL=5; \
-    RUNLEVEL=5; \
+    export DEBIAN_FRONTEND="noninteractive"; \
     sed -i 's/# deb/deb/g' /etc/apt/sources.list \
     #allow work with services
     && rm -f /usr/sbin/policy-rc.d \

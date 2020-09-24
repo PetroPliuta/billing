@@ -1,6 +1,6 @@
 MAILTO=""
 dt="/usr/bin/env date +%d-%m-%Y_%H:%M:%S"
 
-* * * * * root /usr/bin/env python3 /var/www/billing/manage.py cron minutely 2>&1 | (echo $($dt) && cat) 2>&1 >>/var/www/billing/log/cron.log
-1 * * * * root /usr/bin/env python3 /var/www/billing/manage.py cron hourly 2>&1 | (echo $($dt) && cat) 2>&1 >>/var/www/billing/log/cron.log
-1 0 * * * root /usr/bin/env python3 /var/www/billing/manage.py cron daily 2>&1 | (echo $($dt) && cat) 2>&1 >>/var/www/billing/log/cron.log
+* * * * * root /usr/bin/env python3 /var/www/billing/manage.py cron minutely 2>&1 >>/var/www/billing/log/cron.log
+1 * * * * root /usr/bin/env python3 /var/www/billing/manage.py cron hourly 2>&1 >>/var/www/billing/log/cron.log
+1 0 * * * root /usr/bin/env python3 /var/www/billing/manage.py cron daily 2>&1 >>/var/www/billing/log/cron.log

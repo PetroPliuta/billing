@@ -13,8 +13,7 @@ python {
         #  item is GLOBAL TO THE SERVER.  That is, you cannot have two
         #  instances of the python module, each with a different path.
         #
-#        python_path="/path/to/python/files:/another_path/to/python_files/"
-python_path="${confdir}/billing/:/usr/lib/python2.7/dist-packages/:/usr/lib/python2.7/"
+        python_path="${confdir}/billing/:/usr/lib/python2.7/dist-packages/:/usr/lib/python2.7/"
 
         module = billing
         module_accounting = billing_accounting

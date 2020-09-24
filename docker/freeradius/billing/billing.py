@@ -1,9 +1,4 @@
 #! /usr/bin/env python
-#
-# Python module example file
-# Miguel A.L. Paraz <mparaz@mparaz.com>
-#
-# $Id: 5950a076783245c589678ec8e9098f5859d5d7fa $
 
 import radiusd
 import requests
@@ -12,7 +7,7 @@ import requests
 def instantiate(p):
     print "*** instantiate ***"
     print p
-    # return 0 for success or -1 for failure
+    return radiusd.RLM_MODULE_OK
 
 
 def authenticate(p):
@@ -45,8 +40,8 @@ def authorize(p):
         return radiusd.RLM_MODULE_REJECT
     active = api_response[0][u'active']
     balance = api_response[0][u'balance']
-    print "active:", active
-    print "balance:", balance
+    # print "active:", active
+    # print "balance:", balance
     if not active or balance < 0:
         return radiusd.RLM_MODULE_REJECT
     download_speed = api_response[0][u'download_speed']

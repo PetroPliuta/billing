@@ -99,9 +99,9 @@ def accounting(p):
     acct_type = from_nas['Acct-Status-Type'] if from_nas['Acct-Status-Type'] else ''
     nas_username = from_nas['User-Name'] if from_nas['User-Name'] else ''
 
-    if acct_type.lower() == 'Start'.lower() or acct_type.lower() == 'Interim-Update'.lower():
+    if acct_type.lower() == 'start' or acct_type.lower() == 'interim-update':
         set_online(nas_username)
-    if acct_type.lower() == 'Stop'.lower():
+    if acct_type.lower() == 'stop':
         set_online(nas_username, False)
 
     set_last_datetime(nas_username)
