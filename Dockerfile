@@ -56,6 +56,7 @@ COPY . /var/www/billing
 COPY docker/ /
 RUN cd /var/www/billing \
     && pip3 install -r requirements.txt \
+    && find /var/lib/mysql -type f -exec touch {} \; \
     && /etc/init.d/mysql restart \
     && python3 -B manage.py makemigrations \
     && python3 -B manage.py migrate \
