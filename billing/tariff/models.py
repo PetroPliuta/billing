@@ -15,7 +15,7 @@ class InternetTariff(models.Model):
     upload_speed_kbps = models.PositiveIntegerField(
         "Upload speed (kbps)", default=0)
     price = models.DecimalField(
-        max_digits=10, decimal_places=3, default=0, validators=[MinValueValidator(0)])
+        max_digits=10, decimal_places=2, default=0, validators=[MinValueValidator(0)])
 
     def __str__(self):
         return self.title

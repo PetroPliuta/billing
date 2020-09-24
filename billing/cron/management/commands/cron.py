@@ -23,7 +23,7 @@ class Command(BaseCommand):
     def minutely(self):
         online_customers = Customer.objects.filter(online=True)
         for customer in online_customers:
-            now = timezone.now()
+            now = timezone.localtime()
             if (now-customer.last_online_datetime).total_seconds() > 120:
                 self.stdout.write(f"'{customer.login}' - offline")
                 customer.online = False
@@ -31,7 +31,7 @@ class Command(BaseCommand):
 
     def tariff_transactions(self):
         try:
-            day_of_month = timezone.now().day
+            day_of_month = timezone.localtime().day
             if day_of_month != 1:
                 return
             customers = Customer.objects.filter(tariff__isnull=False)

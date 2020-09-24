@@ -27,13 +27,13 @@ class Customer(models.Model):
     last_online_router = models.ForeignKey(
         to=Router, on_delete=models.SET_NULL, null=True)
     description = models.TextField(blank=True, max_length=10**4)
-    added = models.DateTimeField(default=timezone.now)
+    added = models.DateTimeField(default=timezone.localtime)
 
     def __str__(self):
         return self.login
 
     def balance(self):
-        transactions = Transaction.objects.filter(customer=self)
+        transactions = self.transaction_set.all()
         sum = 0
         for transaction in transactions:
             sum = sum + transaction.amount
@@ -64,18 +64,19 @@ class Customer(models.Model):
             print("radclient CoA fail:", ex)
 
     def create_tariff_transaction(self):
+        """Creates monthly tariff transaction"""
         try:
-            current_date = timezone.now().date()
-            transactions = Transaction.objects.filter(
-                customer=self, system=True, date_time__date=current_date)
-            if len(transactions):
+            current_date = timezone.localtime().date()
+            # print(timezone.localtime())
+            transactions = self.transaction_set.filter(
+                system=True, date_time__date=current_date)
+            if transactions.count():
                 raise Exception(
                     f"Something wrong, system transaction for customer '{self.login}' on date '{current_date}' already present")
-            transaction = Transaction(
-                customer=self, amount=-self.tariff.price, date_time=timezone.now(),
+            self.transaction_set.create(
+                amount=-self.tariff.price, date_time=timezone.localtime(),
                 comment=f"Monthly transaction for tariff plan '{self.tariff.title}'",
                 system=True)
-            transaction.save()
             if self.balance() < 0:
                 self.disconnect()
         except Exception as ex:
@@ -85,7 +86,7 @@ class Customer(models.Model):
 class Transaction(models.Model):
     customer = models.ForeignKey(to=Customer, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=12, decimal_places=2)
-    date_time = models.DateTimeField(default=timezone.now)
+    date_time = models.DateTimeField(default=timezone.localtime)
     comment = models.TextField(blank=True, max_length=10**3)
     system = models.BooleanField("System transaction", default=False)
 
