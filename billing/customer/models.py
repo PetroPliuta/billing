@@ -45,12 +45,12 @@ class Customer(models.Model):
     def upload_speed(self):
         return self.tariff.upload_speed_kbps if self.tariff else 0
 
-    def disconnect(self, router=last_online_router):
-        print("router:", router)
+    def disconnect(self, router=None):
+        if not router:
+            router = self.last_online_router
         try:
-            if router:
-                cmd = f"echo 'User-Name=\'{self.login}\'' | /usr/bin/env radclient {router.ip_address}:3799 disconnect {router.secret} &"
-                subprocess.Popen(cmd, shell=True)
+            cmd = f"echo 'User-Name=\'{self.login}\'' | /usr/bin/env radclient {router.ip_address}:3799 disconnect \'{router.secret}\' &"
+            subprocess.Popen(cmd, shell=True)
         except Exception as ex:
             print("radclient disconnect fail:", ex)
 
