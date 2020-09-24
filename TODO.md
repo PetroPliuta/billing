@@ -15,6 +15,7 @@
 - Settings in admin
   - Accounting interval
   - Show password in password field (on field focus). JS (?)
+  - timezone
 - Timezone set/check/fix
 - Send CoA RADIUS packet when tariff changed (optionally)
 - Create customer services instead of a customer

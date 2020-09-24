@@ -48,7 +48,8 @@ class Customer(models.Model):
     def disconnect(self, router=last_online_router):
         try:
             if router:
-                cmd = f"echo 'User-Name={self.login}' | /usr/bin/env radclient {router.ip_address}:3799 disconnect {router.secret} &"
+                print(router)
+                cmd = f"echo 'User-Name=\'{self.login}\'' | /usr/bin/env radclient {router.ip_address}:3799 disconnect {router.secret} &"
                 subprocess.Popen(cmd, shell=True)
         except Exception as ex:
             print("radclient disconnect fail:", ex)
