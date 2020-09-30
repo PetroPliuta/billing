@@ -1,5 +1,6 @@
 from django.shortcuts import render, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponseBadRequest, JsonResponse
 
 
 def index(request):
@@ -8,10 +9,16 @@ def index(request):
 
 @csrf_exempt
 def radius_authorize(request):
+    if not request.method == 'POST':
+        return HttpResponseBadRequest()
     print("auth request:", request)
     print("auth request meta remote addr:", request.META['REMOTE_ADDR'])
     print(f"scheme: {request.scheme}")
-    return HttpResponse("auth\n")
+    data = {
+        "data": "post data",
+        "scheme": request.scheme,
+    }
+    return JsonResponse(data)
 
 
 @csrf_exempt
