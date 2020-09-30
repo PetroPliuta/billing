@@ -25,7 +25,8 @@ def radius_authorize(request):
     # return HttpResponse(request.POST.lists())
 
     # return JsonResponse(mydata)
-    return HttpResponse(request.body)
+    dict_ = dict((x, y) for x, y in p)
+    return HttpResponse(dict_)
 
 
 @csrf_exempt
