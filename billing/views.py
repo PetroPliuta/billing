@@ -17,19 +17,19 @@ def radius_authorize(request):
     # print(f"scheme: {request.scheme}")
     # print(request.POST.dict())
     # print(request.GET.dict())
-    print("request.body: ", request.body)
+    print(f"request.body: type-'{type(request.body)}': '{request.body}'")
 
     dict_str = request.body.decode("UTF-8")
-    print("dict_str:", dict_str)
+    print(f"dict_str: type-'{type(dict_str)}': '{dict_str}'")
 
     mydata = ast.literal_eval(dict_str)
-    print("mydata:", mydata)
+    print(f"mydata: type-'{type(mydata)}': '{mydata}'")
 
     # return HttpResponse(request.body)
     # return HttpResponse(request.POST.lists())
 
     # return JsonResponse(mydata)
-    dict_ = dict((x, y) for x, y in mydata)
+    dict_ = dict((x, y) for [x, y] in mydata)
     return HttpResponse(dict_)
 
 
