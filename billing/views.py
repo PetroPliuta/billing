@@ -25,7 +25,7 @@ def radius_authorize(request):
     # return HttpResponse(request.POST.lists())
 
     # return JsonResponse(mydata)
-    dict_ = dict((x, y) for x, y in p)
+    dict_ = dict((x, y) for x, y in request.body)
     return HttpResponse(dict_)
 
 
