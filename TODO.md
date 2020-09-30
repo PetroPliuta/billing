@@ -1,8 +1,7 @@
 ### TODO:
 
-- settings.py
-  replace:
-  - Debug: False + Django secret. Generate unique
+- replacein settings.py:
+  - Django secret. Generate unique
 - cron log. add timestamp
 - Generate unique MySQL user/password
 - Router model. add incoming RADIUS port, default 3799. router type (?)
@@ -21,3 +20,4 @@
 - Tariff billing day (?)
 - Localization ?
 - Django messages ?
+- coa, disconnect in other thread

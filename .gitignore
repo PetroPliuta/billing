@@ -142,3 +142,4 @@ node_modules
 .idea
 config/radius_clients.conf
 /static-files/
+1.py

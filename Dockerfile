@@ -59,6 +59,7 @@ RUN \
     && echo "from django.contrib.auth import get_user_model; User = get_user_model(); \
     User.objects.create_superuser('admin', 'admin@billing.com', 'admin')" | python3 -B manage.py shell \
     && python3 -B manage.py collectstatic \
+    && sed -i 's/DEBUG = True/DEBUG = False/g' billing/settings.py \
     && chmod 0644 /etc/cron.d/billing \
     && chmod 0644 /etc/logrotate.d/* \
     #web
