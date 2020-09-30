@@ -19,13 +19,17 @@ def radius_authorize(request):
     # print(request.GET.dict())
     print("request.body: ", request.body)
 
-    # dict_str = request.body.decode("UTF-8")
-    # mydata = ast.literal_eval(dict_str)
+    dict_str = request.body.decode("UTF-8")
+    print("dict_str:", dict_str)
+
+    mydata = ast.literal_eval(dict_str)
+    print("mydata:", mydata)
+
     # return HttpResponse(request.body)
     # return HttpResponse(request.POST.lists())
 
     # return JsonResponse(mydata)
-    dict_ = dict((x, y) for x, y in request.body)
+    dict_ = dict((x, y) for x, y in mydata)
     return HttpResponse(dict_)
 
 
