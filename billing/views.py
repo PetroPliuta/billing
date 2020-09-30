@@ -20,9 +20,10 @@ def radius_authorize(request):
         return HttpResponseForbidden()
     nas_username = from_nas['User-Name']
 # customer
-    customer = Customer.objects.filter(login=nas_username)
-    if len(customer) != 1:
+    customers = Customer.objects.filter(login=nas_username)
+    if len(customers) != 1:
         return HttpResponseForbidden()
+    customer = customers.first()
     if not customer.active or customer.balance() < 0:
         return HttpResponseForbidden()
     radius_reply = {
