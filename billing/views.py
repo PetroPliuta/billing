@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse, HttpResponseNotFound
+from django.http import JsonResponse, HttpResponseNotFound, HttpResponse
 import ast
 
 
@@ -17,14 +17,15 @@ def radius_authorize(request):
     # print(f"scheme: {request.scheme}")
     # print(request.POST.dict())
     # print(request.GET.dict())
-    print(request.body)
+    print("request.body: ", request.body)
 
-    dict_str = request.body.decode("UTF-8")
-    mydata = ast.literal_eval(dict_str)
+    # dict_str = request.body.decode("UTF-8")
+    # mydata = ast.literal_eval(dict_str)
     # return HttpResponse(request.body)
     # return HttpResponse(request.POST.lists())
 
-    return JsonResponse(mydata)
+    # return JsonResponse(mydata)
+    return HttpResponse(request.body)
 
 
 @csrf_exempt
