@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponseNotFound
 import ast
@@ -29,5 +29,8 @@ def radius_authorize(request):
 
 @csrf_exempt
 def radius_accounting(request):
-    print("acct request:", request)
-    return HttpResponse("acct\n")
+    if not request.method == 'POST' or request.META['REMOTE_ADDR'] not in ('', '127.0.0.1'):
+        return HttpResponseNotFound()
+    dict_str = request.body.decode("UTF-8")
+    mydata = ast.literal_eval(dict_str)
+    return JsonResponse(mydata)

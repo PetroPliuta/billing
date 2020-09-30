@@ -16,7 +16,12 @@ server {
         deny all;
         proxy_pass http://unix:/var/www/billing/billing.sock;
     }
-    
+    location /radius_authorize/{
+        return 404;
+    }
+    location /radius_accounting/{
+        return 404;
+    }
     location /static/ {
         alias /var/www/billing/static-files/;
     }
