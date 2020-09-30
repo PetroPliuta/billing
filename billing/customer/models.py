@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 from billing.networking.models import Router
 from billing.tariff.models import InternetTariff
 import subprocess
@@ -33,11 +34,9 @@ class Customer(models.Model):
         return self.login
 
     def balance(self):
-        transactions = self.transaction_set.all()
-        sum = 0
-        for transaction in transactions:
-            sum = sum + transaction.amount
-        return sum
+        s = sum(tr.amount for tr in self.transaction_set.all())
+        return mark_safe(f"<span class='customer-balance{' balance-minus' if s<0 else ''}'>{s}</span>")
+        # return s
 
     def download_speed(self):
         return self.tariff.download_speed_kbps if self.tariff else 0
@@ -55,7 +54,7 @@ class Customer(models.Model):
         except Exception as ex:
             print("radclient disconnect fail:", ex)
 
-    def CoA(self):
+    def coa(self):
         try:
             if self.last_online_router:
                 stdin = f"echo 'User-Name=\'{self.login}\', Mikrotik-Rate-Limit=\'{self.upload_speed()}k/{self.download_speed()}k\' \

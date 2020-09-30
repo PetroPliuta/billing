@@ -19,3 +19,5 @@
 - IP networks. Use IP address from network
 - Add button 'Show password' for password fields
 - Tariff billing day (?)
+- Localization ?
+- Django messages ?

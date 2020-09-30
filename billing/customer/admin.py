@@ -45,7 +45,7 @@ class CustomerAdmin(admin.ModelAdmin):
                     not obj.active:
                 old_object.disconnect()
             elif old_object.tariff != obj.tariff:
-                obj.CoA()
+                obj.coa()
 
     def delete_model(self, request, obj):
         customer = copy.copy(obj)

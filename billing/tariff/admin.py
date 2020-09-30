@@ -16,7 +16,7 @@ class InternetTariffAdmin(admin.ModelAdmin):
             if old_tariff.download_speed_kbps != obj.download_speed_kbps or \
                     old_tariff.upload_speed_kbps != obj.upload_speed_kbps:
                 for customer in customers:
-                    customer.CoA()
+                    customer.coa()
 
 
 admin.site.register(InternetTariff, InternetTariffAdmin)

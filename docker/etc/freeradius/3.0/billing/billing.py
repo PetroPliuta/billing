@@ -98,5 +98,5 @@ def send_coa(p):
 
 
 def detach():
-    print "*** goodbye from example.py ***"
+    print "*** goodbye ***"
     return radiusd.RLM_MODULE_OK
