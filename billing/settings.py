@@ -6,15 +6,6 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'yruqtwqzo2ah00+jwlfn@$&c18-^d$-ig4j1^*(2uq(r_ez4o#'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ['*', ]
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -69,19 +60,26 @@ WSGI_APPLICATION = 'billing.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
     # 'default': {
-    #     'ENGINE': 'django.db.backends.mysql',
-    #     'NAME': 'billing',
-    #     'USER': 'django',
-    #     'PASSWORD': 'password',
-    #     'HOST': '127.0.0.1',
-    #     # 'PORT': '3306',
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
     # }
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'billing',
+        'USER': 'django',
+        'PASSWORD': 'password',
+        'HOST': '127.0.0.1',
+        # 'PORT': '3306',
+    }
 }
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'yruqtwqzo2ah00+jwlfn@$&c18-^d$-ig4j1^*(2uq(r_ez4o#'
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+
+ALLOWED_HOSTS = ['*', ]
 
 
 # Password validation
