@@ -10,6 +10,7 @@ def index(request):
 def radius_authorize(request):
     print("auth request:", request)
     print("auth request meta remote addr:", request.META['REMOTE_ADDR'])
+    print(f"scheme: {request.scheme}")
     return HttpResponse("auth\n")
 
 
