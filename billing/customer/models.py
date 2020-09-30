@@ -35,8 +35,8 @@ class Customer(models.Model):
 
     def balance(self):
         s = sum(tr.amount for tr in self.transaction_set.all())
-        return mark_safe(f"<span class='customer-balance{' balance-minus' if s<0 else ''}'>{s}</span>")
-        # return s
+        # return mark_safe(f"<span class='customer-balance{' balance-minus' if s<0 else ''}'>{s}</span>")
+        return s
 
     def download_speed(self):
         return self.tariff.download_speed_kbps if self.tariff else 0

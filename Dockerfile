@@ -40,8 +40,9 @@ RUN \
     cron logrotate rsyslog \
     && systemctl enable freeradius \
     #mysql
-    #fix for build on dockerhub
+    #fix building on dockerhub
     && find /var/lib/mysql -type f -exec touch {} \; \
+    #
     && /etc/init.d/mysql restart \
     && echo "create database billing character set utf8 COLLATE utf8_general_ci; \
     CREATE USER 'django'@'%' IDENTIFIED BY 'password'; \
@@ -50,6 +51,7 @@ RUN \
     #billing. for dbus-python
     && apt-get -y install pkg-config libdbus-1-dev libglib2.0-dev \
     #billing
+    && pip2 install requests-unixsocket \
     && cd /var/www/billing \
     && pip3 install -r requirements.txt \
     && python3 -B manage.py makemigrations \
