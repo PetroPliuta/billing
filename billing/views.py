@@ -108,7 +108,7 @@ def radius_accounting(request):
         else:
             nas_username = from_nas['User-Name']
     else:
-        nas_username = ''
+        nas_username_raw = nas_username = ''
     if acct_type.lower() in ('start', 'interim-update'):
         _set_online(nas_username)
     elif acct_type.lower() == 'stop':
