@@ -52,9 +52,10 @@ def _set_dhcp(login, is_dhcp):
         print("accounting set_dhcp error", e)
 
 
-def _set_last_login(login):
+def _set_last_login(login, raw_login):
     try:
-        Customer.objects.filter(login=login).update(last_online_login=login)
+        Customer.objects.filter(login=login).update(
+            last_online_login=raw_login)
     except Exception as e:
         print("accounting set_last_login error", e)
 
@@ -101,6 +102,7 @@ def radius_accounting(request):
     from_nas = dict(ast.literal_eval(request.body.decode("UTF-8")))
     acct_type = from_nas['Acct-Status-Type'] if from_nas['Acct-Status-Type'] else ''
     if from_nas['User-Name']:
+        nas_username_raw = from_nas['User-Name']
         if is_mac(from_nas['User-Name']):
             nas_username = format_mac(from_nas['User-Name'])
         else:
@@ -114,7 +116,7 @@ def radius_accounting(request):
     _set_last_datetime(nas_username)
     _set_last_ip(from_nas)
     _set_last_router(from_nas)
-    _set_last_login(nas_username)
+    _set_last_login(nas_username, nas_username_raw)
 
     # dhcp OR hotspot-login-by-mac
     if is_mac(nas_username) and ('Calling-Station-Id' not in from_nas.keys() or format_mac(from_nas['Calling-Station-Id']) != nas_username):
