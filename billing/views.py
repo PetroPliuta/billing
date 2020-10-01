@@ -5,6 +5,7 @@ import ast
 from billing.customer.models import Customer
 from billing.networking.models import Router
 from django.utils import timezone
+from billing.helpers import is_mac, format_mac
 
 
 def index(request):
@@ -59,12 +60,21 @@ def radius_authorize(request):
     from_nas = dict(ast.literal_eval(request.body.decode("UTF-8")))
     if not 'User-Name' in from_nas.keys():
         return HttpResponseForbidden()
-    nas_username = from_nas['User-Name']
+    nas_username = format_mac(
+        from_nas['User-Name']) if is_mac(from_nas['User-Name']) else from_nas['User-Name']
 # customer
-    customers = Customer.objects.filter(login=nas_username)
-    if len(customers) != 1:
-        return HttpResponseForbidden()
-    customer = customers.first()
+    if is_mac(nas_username):
+        customers = Customer.objects.filter(
+            login__iregex="^[0-9a-f]{2}([-:]?)[0-9a-f]{2}(\\1[0-9a-f]{2}){4}$")  # get all customers where login is mac
+        for customer_ in customers:
+            if format_mac(customer_.login) == nas_username:
+                customer = customer_
+                break
+    else:  # not mac
+        customers = Customer.objects.filter(login=nas_username)
+        if len(customers) != 1:
+            return HttpResponseForbidden()
+        customer = customers.first()
     if not customer.active or customer.balance() < 0:
         return HttpResponseForbidden()
     radius_reply = {
@@ -99,8 +109,15 @@ def radius_accounting(request):
     _set_last_datetime(nas_username)
     _set_last_ip(from_nas)
     _set_last_router(from_nas)
-    if 'Calling-Station-Id' in from_nas.keys():
+
+    if is_mac(nas_username):
+        if 'Calling-Station-Id' in from_nas.keys():
+            if from_nas['Calling-Station-Id'] == nas_username:  # hostpot login by mac
+                _set_dhcp(nas_username, False)
+            else:  # dhcp
+                _set_dhcp(nas_username, True)
+        else:  # no Calling-Station-Id attribute
+            _set_dhcp(nas_username, True)
+    else:  # login is not mac
         _set_dhcp(nas_username, False)
-    else:
-        _set_dhcp(nas_username, True)
     return HttpResponse()
