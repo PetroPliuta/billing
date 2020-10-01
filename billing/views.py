@@ -66,6 +66,7 @@ def radius_authorize(request):
     if is_mac(nas_username):
         customers = Customer.objects.filter(
             login__iregex=r"^[0-9a-f]{2}([-:]?)[0-9a-f]{2}(\\1[0-9a-f]{2}){4}$")  # get all customers where login is mac
+        print("radius_authorize ddebug. DB customer count", customers.count())
         for customer_ in customers:
             print("radius_authorize ddebug. DB customer", customer_)
             if format_mac(customer_.login) == nas_username:
