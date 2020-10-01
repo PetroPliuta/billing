@@ -1,6 +1,5 @@
 from django.db import models
 from django.utils import timezone
-from django.utils.safestring import mark_safe
 from billing.networking.models import Router
 from billing.tariff.models import InternetTariff
 import subprocess
@@ -34,9 +33,14 @@ class Customer(models.Model):
     def __str__(self):
         return self.login
 
+    # def save(self, *args, **kwargs):
+    #     if is_mac(self.login):
+    #         self.login = format_mac(self.login)
+    #     super().save(*args, **kwargs)
+    #     messages.add_message(None, messages.INFO, 'Hello world.')
+
     def balance(self):
         s = sum(tr.amount for tr in self.transaction_set.all())
-        # return mark_safe(f"<span class='customer-balance{' balance-minus' if s<0 else ''}'>{s}</span>")
         return s
 
     def download_speed(self):

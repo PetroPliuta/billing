@@ -63,20 +63,10 @@ def radius_authorize(request):
     nas_username = format_mac(
         from_nas['User-Name']) if is_mac(from_nas['User-Name']) else from_nas['User-Name']
 # customer
-    if is_mac(nas_username):
-        customers = Customer.objects.filter(
-            login__iregex=r"^[0-9a-f]{2}([-:]?)[0-9a-f]{2}(\\1[0-9a-f]{2}){4}$")  # get all customers where login is mac
-        print("radius_authorize ddebug. DB customer count", customers.count())
-        for customer_ in customers:
-            print("radius_authorize ddebug. DB customer", customer_)
-            if format_mac(customer_.login) == nas_username:
-                customer = customer_
-                break
-    else:  # not mac
-        customers = Customer.objects.filter(login=nas_username)
-        if len(customers) != 1:
-            return HttpResponseForbidden()
-        customer = customers.first()
+    customers = Customer.objects.filter(login=nas_username)
+    if len(customers) != 1:
+        return HttpResponseForbidden()
+    customer = customers.first()
     if not customer.active or customer.balance() < 0:
         return HttpResponseForbidden()
     radius_reply = {
@@ -103,7 +93,13 @@ def radius_accounting(request):
         return HttpResponseNotFound()
     from_nas = dict(ast.literal_eval(request.body.decode("UTF-8")))
     acct_type = from_nas['Acct-Status-Type'] if from_nas['Acct-Status-Type'] else ''
-    nas_username = from_nas['User-Name'] if from_nas['User-Name'] else ''
+    if from_nas['User-Name']:
+        if is_mac(from_nas['User-Name']):
+            nas_username = format_mac(from_nas['User-Name'])
+        else:
+            nas_username = from_nas['User-Name']
+    else:
+        nas_username = ''
     if acct_type.lower() in ('start', 'interim-update'):
         _set_online(nas_username)
     elif acct_type.lower() == 'stop':
@@ -112,9 +108,9 @@ def radius_accounting(request):
     _set_last_ip(from_nas)
     _set_last_router(from_nas)
 
-    if is_mac(nas_username):
+    if is_mac(nas_username): # dhcp OR hotspot-login-by-mac
         if 'Calling-Station-Id' in from_nas.keys():
-            if from_nas['Calling-Station-Id'] == nas_username:  # hostpot login by mac
+            if format_mac(from_nas['Calling-Station-Id']) == nas_username:  # hostpot login by mac
                 _set_dhcp(nas_username, False)
             else:  # dhcp
                 _set_dhcp(nas_username, True)

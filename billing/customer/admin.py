@@ -3,6 +3,8 @@ from django.contrib.auth.models import Group
 from .models import Customer, Transaction
 from .forms import CustomerForm
 import copy
+from billing.helpers import format_mac, is_mac
+from django.contrib import messages
 
 
 class CustomerAdmin(admin.ModelAdmin):
@@ -13,7 +15,7 @@ class CustomerAdmin(admin.ModelAdmin):
     list_filter = ('active', 'online')
     readonly_fields = ('online', 'balance', 'last_online_datetime',
                        'last_online_ip', 'last_online_router', 'last_online_dhcp')
-    
+
     save_as = True
     save_as_continue = False
     search_fields = ('login', 'ip_address')
@@ -32,6 +34,12 @@ class CustomerAdmin(admin.ModelAdmin):
                 old_object = self.model.objects.get(id=obj.id)
         except Exception as ex:
             print("Cannot get old object:", ex)
+        if is_mac(obj.login):
+            old_login = obj.login
+            obj.login = format_mac(old_login)
+            if old_login != obj.login:
+                messages.add_message(
+                    request, messages.WARNING, f"Login '{old_login}' was changed to '{obj.login}' because it is MAC address.")
         super().save_model(request, obj, form, change)
         if change:
             # print(
