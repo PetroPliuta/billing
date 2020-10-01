@@ -44,6 +44,13 @@ def _set_last_router(from_nas):
         print("set_last_router error", e)
 
 
+def _set_dhcp(login, is_dhcp):
+    try:
+        Customer.objects.filter(login=login).update(last_online_dhcp=is_dhcp)
+    except expression as identifier:
+        pass
+
+
 @csrf_exempt
 def radius_authorize(request):
     if not request.method == 'POST' or request.META['REMOTE_ADDR'] not in ('', '127.0.0.1'):
@@ -92,4 +99,8 @@ def radius_accounting(request):
     _set_last_datetime(nas_username)
     _set_last_ip(from_nas)
     _set_last_router(from_nas)
+    if not 'Calling-Station-Id' in from_nas.keys():
+        _set_dhcp(login, True)
+    else:
+        _set_dhcp(login, False)
     return HttpResponse()

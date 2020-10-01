@@ -14,9 +14,9 @@ router.register(r'routers', RouterViewSet)
 urlpatterns = [
     re_path(r'^api/v1/', include(router.urls)),
     path('admin/', admin.site.urls),
-    path('', views.index),
     path('radius_authorize/', views.radius_authorize),
     path('radius_accounting/', views.radius_accounting),
+    path('', views.index),
 ]
 
 admin.site.site_header = "Billing Administration"

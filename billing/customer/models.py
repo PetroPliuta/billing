@@ -27,6 +27,7 @@ class Customer(models.Model):
         protocol='IPv4', blank=True, null=True)
     last_online_router = models.ForeignKey(
         to=Router, on_delete=models.SET_NULL, null=True)
+    last_online_dhcp = models.BooleanField(default=False)
     description = models.TextField(blank=True, max_length=10**4)
     added = models.DateTimeField(default=timezone.localtime)
 
