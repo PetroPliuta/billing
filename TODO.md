@@ -24,3 +24,4 @@
 - Localization ?
 - Django messages ?
 - coa, disconnect in other thread
+- radius_accounting. get customer only once

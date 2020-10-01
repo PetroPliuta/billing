@@ -52,6 +52,13 @@ def _set_dhcp(login, is_dhcp):
         print("accounting set_dhcp error", e)
 
 
+def _set_last_login(login):
+    try:
+        Customer.objects.filter(login=login).update(last_online_login=login)
+    except Exception as e:
+        print("accounting set_last_login error", e)
+
+
 @csrf_exempt
 def radius_authorize(request):
     if not request.method == 'POST' or request.META['REMOTE_ADDR'] not in ('', '127.0.0.1'):
@@ -107,6 +114,7 @@ def radius_accounting(request):
     _set_last_datetime(nas_username)
     _set_last_ip(from_nas)
     _set_last_router(from_nas)
+    _set_last_login(nas_username)
 
     # dhcp OR hotspot-login-by-mac
     if is_mac(nas_username) and ('Calling-Station-Id' not in from_nas.keys() or format_mac(from_nas['Calling-Station-Id']) != nas_username):
