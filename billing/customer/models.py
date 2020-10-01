@@ -13,8 +13,8 @@ def rand_name():
 class Customer(models.Model):
     full_name = models.CharField(
         max_length=255, default=rand_name)
-    login = models.CharField("Login", max_length=255, unique=True,
-                             default='user', help_text="For DHCP: MAC address")
+    login = models.CharField("Login or MAC address", max_length=255, unique=True,
+                             default='user')
     password = models.CharField(
         max_length=255, blank=True, default='pass', help_text="Leave empty for DHCP")
     tariff = models.ForeignKey(
@@ -36,8 +36,7 @@ class Customer(models.Model):
         return self.login
 
     def balance(self):
-        s = sum(tr.amount for tr in self.transaction_set.all())
-        return s
+        return sum(tr.amount for tr in self.transaction_set.all())
 
     def download_speed(self):
         return self.tariff.download_speed_kbps if self.tariff else 0

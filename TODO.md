@@ -6,6 +6,9 @@
 - Generate unique MySQL user/password
 - Router model. add incoming RADIUS port, default 3799. router type (?)
 - Customer model. add ~~fullname~~, other fields
+- Customer admin. Format datetime (min, sec, ...)
+- python3 manage.py check --deploy
+- Disable REST API. Temporary until React/redux
 
 ### Features:
 

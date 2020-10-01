@@ -3,8 +3,11 @@ from django.contrib.auth.models import Group
 from .models import Customer, Transaction
 from .forms import CustomerForm
 import copy
-from billing.helpers import format_mac, is_mac
+from billing.helpers import format_mac, is_mac, is_one_list_in_another_list
 from django.contrib import messages
+from django.urls import reverse, reverse_lazy
+from django.utils.http import urlencode
+from django.utils.html import format_html
 
 
 class CustomerAdmin(admin.ModelAdmin):
@@ -22,17 +25,14 @@ class CustomerAdmin(admin.ModelAdmin):
     form = CustomerForm
 
     def save_model(self, request, obj, form, change):
-        def ip_changed(ip1, ip2):
-            if ip1 == None:
-                ip1 = ''
-            if ip2 == None:
-                ip2 == ''
-            return ip1 != ip2
-        try:
-            if change:
+        def is_disconnect_needed():
+            return change and (is_one_list_in_another_list(('login', 'password', 'ip_address'), form.changed_data) or
+                               ('active' in form.changed_data and not obj.active))
+        if is_disconnect_needed():
+            try:
                 old_object = self.model.objects.get(id=obj.id)
-        except Exception as ex:
-            print("Cannot get old object:", ex)
+            except Exception as ex:
+                print("Cannot get old object:", ex)
         if is_mac(obj.login):
             old_login = obj.login
             obj.login = format_mac(old_login)
@@ -40,14 +40,10 @@ class CustomerAdmin(admin.ModelAdmin):
                 messages.add_message(
                     request, messages.WARNING, f"Login '{old_login}' was changed to '{obj.login}' because it is MAC address.")
         super().save_model(request, obj, form, change)
-        if change:
-            if ip_changed(old_object.ip_address, obj.ip_address) or \
-                    old_object.login != obj.login or \
-                    old_object.password != obj.password or \
-                    not obj.active:
-                old_object.disconnect()
-            elif old_object.tariff != obj.tariff:
-                obj.coa()
+        if is_disconnect_needed():
+            old_object.disconnect()
+        elif not obj.tariff or obj.tariff.id != form.initial['tariff']:
+            obj.coa()
 
     def delete_model(self, request, obj):
         customer = copy.copy(obj)
@@ -65,11 +61,20 @@ admin.site.register(Customer, CustomerAdmin)
 
 
 class TransactionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'customer', 'amount', 'date_time', 'system')
-    list_display_links = ('customer', 'amount')
-    list_filter = ('customer',)
-    ordering = ('id',)
+    list_display = 'id', 'customer_', 'amount', 'date_time', 'system'
+    list_display_links = 'id', 'amount', 'date_time'
+    list_filter = 'customer',
+    ordering = 'id',
     readonly_fields = 'system', 'date_time'
+
+    def customer_(self, obj):
+        url = (
+            reverse_lazy("admin:customer_customer_change",
+                         args=(obj.customer.id,))
+        )
+        return format_html('Customer: <a href="{}">{}</a>', url, obj.customer.login)
+
+    customer_.short_description = "Customer"
 
 
 admin.site.register(Transaction, TransactionAdmin)
