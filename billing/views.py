@@ -47,8 +47,8 @@ def _set_last_router(from_nas):
 def _set_dhcp(login, is_dhcp):
     try:
         Customer.objects.filter(login=login).update(last_online_dhcp=is_dhcp)
-    except expression as identifier:
-        pass
+    except Exception as e:
+        print("accounting set_dhcp error", e)
 
 
 @csrf_exempt
