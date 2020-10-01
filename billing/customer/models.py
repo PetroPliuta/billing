@@ -24,6 +24,8 @@ class Customer(models.Model):
     active = models.BooleanField(default=True)
     online = models.BooleanField(default=False)
     last_online_datetime = models.DateTimeField(blank=True, null=True)
+    last_online_login = models.CharField(
+        max_length=255, blank=True, default='')
     last_online_ip = models.GenericIPAddressField(
         protocol='IPv4', blank=True, null=True)
     last_online_router = models.ForeignKey(
@@ -48,7 +50,8 @@ class Customer(models.Model):
         router_ = router or self.last_online_router
         try:
             if router_:
-                stdin = f"echo 'User-Name=\'{self.login}\' {', Framed-IP-Address='+str(self.last_online_ip) if self.last_online_ip else ''}'"
+                stdin = f"echo 'User-Name=\'{self.last_online_login if self.last_online_login else self.login}\' \
+                    {', Framed-IP-Address='+str(self.last_online_ip) if self.last_online_ip else ''}'"
                 cmd = f"/usr/bin/env radclient {router_.ip_address}:3799 disconnect \'{router_.secret}\' &"
                 subprocess.Popen(stdin+"|"+cmd, shell=True)
         except Exception as ex:
