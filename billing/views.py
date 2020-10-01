@@ -101,7 +101,7 @@ def radius_accounting(request):
         return HttpResponseNotFound()
     from_nas = dict(ast.literal_eval(request.body.decode("UTF-8")))
     acct_type = from_nas['Acct-Status-Type'] if from_nas['Acct-Status-Type'] else ''
-    if from_nas['User-Name']:
+    if 'User-Name' in from_nas.keys() and from_nas['User-Name']:
         nas_username_raw = from_nas['User-Name']
         if is_mac(from_nas['User-Name']):
             nas_username = format_mac(from_nas['User-Name'])
