@@ -13,12 +13,14 @@ def rand_name():
 class Customer(models.Model):
     full_name = models.CharField(
         max_length=255, default=rand_name)
-    login = models.CharField(max_length=255, unique=True, default='user')
-    password = models.CharField(max_length=255, blank=True, default='pass')
+    login = models.CharField("Login", max_length=255, unique=True,
+                             default='user', help_text="For DHCP: MAC address")
+    password = models.CharField(
+        max_length=255, blank=True, default='pass', help_text="Leave empty for DHCP")
     tariff = models.ForeignKey(
         to=InternetTariff, on_delete=models.SET_NULL, blank=True, null=True)
-    ip_address = models.GenericIPAddressField(
-        protocol='IPv4', blank=True, null=True, unique=True)
+    ip_address = models.GenericIPAddressField("IP address",
+                                              protocol='IPv4', blank=True, null=True, unique=True)
     active = models.BooleanField(default=True)
     online = models.BooleanField(default=False)
     last_online_datetime = models.DateTimeField(blank=True, null=True)
@@ -32,12 +34,6 @@ class Customer(models.Model):
 
     def __str__(self):
         return self.login
-
-    # def save(self, *args, **kwargs):
-    #     if is_mac(self.login):
-    #         self.login = format_mac(self.login)
-    #     super().save(*args, **kwargs)
-    #     messages.add_message(None, messages.INFO, 'Hello world.')
 
     def balance(self):
         s = sum(tr.amount for tr in self.transaction_set.all())

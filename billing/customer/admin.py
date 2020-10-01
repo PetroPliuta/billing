@@ -15,7 +15,6 @@ class CustomerAdmin(admin.ModelAdmin):
     list_filter = ('active', 'online')
     readonly_fields = ('online', 'balance', 'last_online_datetime',
                        'last_online_ip', 'last_online_router', 'last_online_dhcp')
-
     save_as = True
     save_as_continue = False
     search_fields = ('login', 'ip_address')
@@ -42,12 +41,6 @@ class CustomerAdmin(admin.ModelAdmin):
                     request, messages.WARNING, f"Login '{old_login}' was changed to '{obj.login}' because it is MAC address.")
         super().save_model(request, obj, form, change)
         if change:
-            # print(
-            #     f"old: ip:'{old_object.ip_address}', login:'{old_object.login}', pass:'{old_object.password}'")
-            # print(
-            #     f"new: ip:'{obj.ip_address}',        login:'{obj.login}',        pass:'{obj.password}', active:'{obj.active}'")
-            # print(
-            #     f"ip_changed:{ip_changed(old_object.ip_address, obj.ip_address)}")
             if ip_changed(old_object.ip_address, obj.ip_address) or \
                     old_object.login != obj.login or \
                     old_object.password != obj.password or \
