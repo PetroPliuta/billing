@@ -100,7 +100,7 @@ def radius_accounting(request):
     _set_last_ip(from_nas)
     _set_last_router(from_nas)
     if not 'Calling-Station-Id' in from_nas.keys():
-        _set_dhcp(login, True)
+        _set_dhcp(nas_username, True)
     else:
-        _set_dhcp(login, False)
+        _set_dhcp(nas_username, False)
     return HttpResponse()
