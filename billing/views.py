@@ -108,14 +108,9 @@ def radius_accounting(request):
     _set_last_ip(from_nas)
     _set_last_router(from_nas)
 
-    if is_mac(nas_username): # dhcp OR hotspot-login-by-mac
-        if 'Calling-Station-Id' in from_nas.keys():
-            if format_mac(from_nas['Calling-Station-Id']) == nas_username:  # hostpot login by mac
-                _set_dhcp(nas_username, False)
-            else:  # dhcp
-                _set_dhcp(nas_username, True)
-        else:  # no Calling-Station-Id attribute
-            _set_dhcp(nas_username, True)
-    else:  # login is not mac
+    # dhcp OR hotspot-login-by-mac
+    if is_mac(nas_username) and ('Calling-Station-Id' not in from_nas.keys() or format_mac(from_nas['Calling-Station-Id']) != nas_username):
+        _set_dhcp(nas_username, True)
+    else:  # login is not mac OR Calling-Station-Id == User-Name
         _set_dhcp(nas_username, False)
     return HttpResponse()
