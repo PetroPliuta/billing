@@ -70,7 +70,7 @@ class Customer(models.Model):
             if self.last_online_router:
                 stdin = f"echo 'User-Name=\'{self.last_online_login if self.last_online_login else self.login}\', \
                     Mikrotik-Rate-Limit=\'{self.upload_speed()}k/{self.download_speed()}k\' \
-                    {', Framed-IP-Address='+str(self.last_online_ip) if self.last_online_ip else ''}'"
+                    {', Framed-IP-Address='+str(self.last_online_ip) if self.last_online_ip and not self.last_online_dhcp else ''}'"
                 cmd = f"/usr/bin/env radclient {self.last_online_router.ip_address}:3799 coa \'{self.last_online_router.secret}\' &"
                 subprocess.Popen(stdin+"|"+cmd, shell=True)
         except Exception as ex:
