@@ -39,18 +39,22 @@ def _set_last_datetime(login):
 
 def _set_last_ip(from_nas):
     try:
+        nas_username = format_mac(
+            from_nas['User-Name']) if is_mac(from_nas['User-Name']) else from_nas['User-Name']
         Customer.objects.filter(
-            login=from_nas['User-Name']).update(last_online_ip=from_nas['Framed-IP-Address'])
+            login=nas_username).update(last_online_ip=from_nas['Framed-IP-Address'])
     except Exception as e:
         print("set_last_ip error", e)
 
 
 def _set_last_router(from_nas):
     try:
+        nas_username = format_mac(
+            from_nas['User-Name']) if is_mac(from_nas['User-Name']) else from_nas['User-Name']
         routers = Router.objects.filter(ip_address=from_nas['NAS-IP-Address'])
         if len(routers) == 1:
             Customer.objects.filter(
-                login=from_nas['User-Name']).update(last_online_router=routers.first())
+                login=nas_username).update(last_online_router=routers.first())
     except Exception as e:
         print("set_last_router error", e)
 
