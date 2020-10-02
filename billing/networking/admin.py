@@ -2,6 +2,7 @@ from django.contrib import admin
 from .models import Router
 from .forms import RouterForm
 from billing.customer.models import Customer
+from billing.helpers import is_one_list_in_another_list
 
 
 class RouterAdmin(admin.ModelAdmin):
@@ -18,7 +19,7 @@ class RouterAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
         Router.generate_config()
         Router.restart_radius()
-        if change:
+        if change and is_one_list_in_another_list(('ip_address', 'secret'), form.changed_data):
             for customer in customers:
                 customer.disconnect(old_router)
 

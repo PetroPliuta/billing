@@ -5,7 +5,7 @@ from .forms import CustomerForm
 import copy
 from billing.helpers import format_mac, is_mac, is_one_list_in_another_list
 from django.contrib import messages
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.utils.http import urlencode
 from django.utils.html import format_html
 
@@ -67,12 +67,17 @@ class TransactionAdmin(admin.ModelAdmin):
 
     def customer_(self, obj):
         url = (
-            reverse_lazy("admin:customer_customer_change",
+            reverse("admin:customer_customer_change",
                          args=(obj.customer.id,))
         )
         return format_html('Customer: <a href="{}">{}</a>', url, obj.customer.login)
 
     customer_.short_description = "Customer"
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        if obj.customer.balance() < 0:
+            obj.customer.disconnect()
 
 
 admin.site.register(Transaction, TransactionAdmin)

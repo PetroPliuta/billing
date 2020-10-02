@@ -3,6 +3,7 @@ from .models import InternetTariff
 from django.urls import reverse
 from django.utils.http import urlencode
 from django.utils.html import format_html
+from billing.helpers import is_one_list_in_another_list
 
 
 class InternetTariffAdmin(admin.ModelAdmin):
@@ -11,15 +12,12 @@ class InternetTariffAdmin(admin.ModelAdmin):
     ordering = 'id',
 
     def save_model(self, request, obj, form, change):
-        if change:
+        if change and is_one_list_in_another_list(('download_speed_kbps', 'upload_speed_kbps'), form.changed_data):
             customers = obj.customer_set.all()
-            old_tariff = self.model.objects.get(id=obj.id)
         super().save_model(request, obj, form, change)
-        if change:
-            if old_tariff.download_speed_kbps != obj.download_speed_kbps or \
-                    old_tariff.upload_speed_kbps != obj.upload_speed_kbps:
-                for customer in customers:
-                    customer.coa()
+        if change and is_one_list_in_another_list(('download_speed_kbps', 'upload_speed_kbps'), form.changed_data):
+            for customer in customers:
+                customer.coa()
 
     def view_customers(self, obj):
         count = obj.customer_set.count()
