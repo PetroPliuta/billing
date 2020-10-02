@@ -19,7 +19,7 @@ class Router(models.Model):
 
     @staticmethod
     def generate_config():
-        radius_clients_file = BASE_DIR/'config/radius_clients.conf'
+        radius_clients_file = BASE_DIR/'configuration/radius_clients.conf'
         routers = Router.objects.all()
         with open(radius_clients_file, 'w') as f:
             for router in routers:
