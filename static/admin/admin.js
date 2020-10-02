@@ -5,7 +5,7 @@ list1.forEach((element) => {
   if (element.type == "password") {
     element.addEventListener("mouseenter", (ev) => {
       timer = setTimeout(() => {
-        element.type = "text";
+        ev.target.type = "text";
       }, 3000);
     });
     element.addEventListener("mouseleave", (ev) => {
@@ -13,6 +13,7 @@ list1.forEach((element) => {
         clearTimeout(timer);
         timer = 0;
       }
+      ev.target.type = "password";
     });
   }
 });
