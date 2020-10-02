@@ -56,6 +56,14 @@ class Customer(models.Model):
                 subprocess.Popen(stdin+"|"+cmd, shell=True)
         except Exception as ex:
             print("radclient disconnect fail:", ex)
+        try:
+            if router_:
+                stdin = f"echo 'User-Name=\'{self.last_online_login if self.last_online_login else self.login}\' \
+                    {', Framed-IP-Address='+str(self.ip_address) if self.ip_address else ''}'"
+                cmd = f"/usr/bin/env radclient {router_.ip_address}:3799 disconnect \'{router_.secret}\' &"
+                subprocess.Popen(stdin+"|"+cmd, shell=True)
+        except Exception as ex:
+            print("radclient disconnect fail:", ex)
 
     def coa(self):
         try:
