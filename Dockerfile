@@ -75,6 +75,7 @@ RUN \
     && echo '$INCLUDE /var/www/billing/configuration/radius_clients.conf' >> /etc/freeradius/3.0/clients.conf \
     && touch /var/www/billing/configuration/radius_clients.conf \
     #clean
+    && /etc/init.d/mysql stop \
     && unset DEBIAN_FRONTEND \
     && echo 'debconf debconf/frontend select Dialog' | debconf-set-selections \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
