@@ -40,7 +40,7 @@ class CustomerAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
         if is_disconnect_needed():
             old_object.disconnect()
-        elif not obj.tariff or obj.tariff.id != form.initial['tariff']:
+        elif change and 'tariff' in form.changed_data:
             obj.coa()
 
     def delete_model(self, request, obj):
@@ -68,7 +68,7 @@ class TransactionAdmin(admin.ModelAdmin):
     def customer_(self, obj):
         url = (
             reverse("admin:customer_customer_change",
-                         args=(obj.customer.id,))
+                    args=(obj.customer.id,))
         )
         return format_html('Customer: <a href="{}">{}</a>', url, obj.customer.login)
 
