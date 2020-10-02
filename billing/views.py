@@ -6,6 +6,7 @@ from billing.customer.models import Customer
 from billing.networking.models import Router
 from django.utils import timezone
 from billing.helpers import is_mac, format_mac
+from configuration.settings import radius_accounting_interval
 
 
 def index(request):
@@ -17,11 +18,20 @@ def _set_online(login, online=True):
         Customer.objects.filter(login=login).update(online=online)
     except Exception as e:
         print("set_online error", e)
+    try:
+        Customer.objects.filter(last_online_login=login).update(online=online)
+    except Exception as e:
+        print("set_online error", e)
 
 
 def _set_last_datetime(login):
     try:
         Customer.objects.filter(login=login).update(
+            last_online_datetime=timezone.localtime())
+    except Exception as e:
+        print("set_last_datetime error", e)
+    try:
+        Customer.objects.filter(last_online_login=login).update(
             last_online_datetime=timezone.localtime())
     except Exception as e:
         print("set_last_datetime error", e)
@@ -58,6 +68,11 @@ def _set_last_login(login, raw_login):
             last_online_login=raw_login)
     except Exception as e:
         print("accounting set_last_login error", e)
+    try:
+        Customer.objects.filter(last_online_login=login).update(
+            last_online_login=raw_login)
+    except Exception as e:
+        print("accounting set_last_login error", e)
 
 
 @csrf_exempt
@@ -78,7 +93,7 @@ def radius_authorize(request):
     if not customer.active or customer.balance() < 0:
         return HttpResponseForbidden()
     radius_reply = {
-        'Acct-Interim-Interval': '60',
+        'Acct-Interim-Interval': str(radius_accounting_interval),
         'Mikrotik-Rate-Limit': f"{customer.upload_speed()}k/{customer.download_speed()}k",
     }
     radius_config = {
