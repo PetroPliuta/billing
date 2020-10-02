@@ -1,3 +1,4 @@
+from django.conf.locale.en import formats as en_formats
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -135,3 +136,5 @@ STATIC_ROOT = BASE_DIR / "static-files"
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }
+
+en_formats.DATETIME_FORMAT = "Y-m-d H:i:s"
