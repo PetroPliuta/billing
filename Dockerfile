@@ -51,6 +51,7 @@ RUN \
     #billing. for dbus-python
     && apt-get -y install pkg-config libdbus-1-dev libglib2.0-dev \
     #billing
+    python-pip \
     && pip2 install requests-unixsocket \
     && cd /var/www/billing \
     && pip3 install -r requirements.txt \
@@ -71,15 +72,15 @@ RUN \
     && cd /etc/freeradius/3.0/ \
     && ln -sr mods-available/billing mods-enabled/ \
     && ln -sr sites-available/billing sites-enabled/ \
-    && echo '$INCLUDE /var/www/billing/config/radius_clients.conf' >> /etc/freeradius/3.0/clients.conf \
-    && touch /var/www/billing/config/radius_clients.conf \
+    && echo '$INCLUDE /var/www/billing/configuration/radius_clients.conf' >> /etc/freeradius/3.0/clients.conf \
+    && touch /var/www/billing/configuration/radius_clients.conf \
     #clean
     && unset DEBIAN_FRONTEND \
     && echo 'debconf debconf/frontend select Dialog' | debconf-set-selections \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && cd /var/www/billing \
     && rm -rf .git docker env frontend node_modules static toolbox .gitignore .dockerignore db.sqlite3 Dockerfile package* webpack.config.js \
-    && find -iname __pycache__ -exec rm -rf {} \; || true
+    && (find -iname __pycache__ -exec rm -rf {} \; || true)
 VOLUME [ "/sys/fs/cgroup" ]
 EXPOSE 80 1812/udp 1813/udp
 ENTRYPOINT ["/lib/systemd/systemd"]
