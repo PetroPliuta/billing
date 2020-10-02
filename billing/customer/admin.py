@@ -11,17 +11,15 @@ from django.utils.html import format_html
 
 
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ('id', 'login',  'tariff', 'ip_address',
-                    'balance', 'active', 'online')
-    list_display_links = ('login',)
-    list_editable = ('ip_address', 'active', 'tariff')
-    list_filter = ('active', 'online')
-    readonly_fields = ('online', 'balance', 'last_online_datetime', 'last_online_login',
-                       'last_online_ip', 'last_online_router', 'last_online_dhcp')
+    list_display = 'id', 'login',  'tariff', 'ip_address', 'balance', 'active', 'online'
+    list_display_links = 'login',
+    list_editable = 'ip_address', 'active', 'tariff'
+    list_filter = 'active', 'online'
+    readonly_fields = 'online', 'balance', 'last_online_datetime', 'last_online_login', 'last_online_ip', 'last_online_router', 'last_online_dhcp'
     save_as = True
     save_as_continue = False
-    search_fields = ('login', 'ip_address')
-    ordering = ("id",)
+    search_fields = 'login', 'ip_address'
+    ordering = "id",
     form = CustomerForm
 
     def save_model(self, request, obj, form, change):
