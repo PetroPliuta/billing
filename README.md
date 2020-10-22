@@ -14,4 +14,4 @@ docker exec -it billing /bin/bash
 
 ### Links:
 Docker-hub: https://hub.docker.com/r/pliuta/billing
-Video (course wok defence): https://youtu.be/E7PxUpw-XJ4
+Video (course work defence): https://youtu.be/E7PxUpw-XJ4
