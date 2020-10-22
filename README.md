@@ -1,4 +1,4 @@
-This project is a course work (https://rivne.itstep.org/programmer)  
+This project is a course work (https://rivne.itstep.org/python)  
 The project implements simple billing system for internet providers.  
 Only Mikrotik routers are supported to be Network Access Servers (NAS, router)  
 System allows managing of: customers, finance transactions, internet tariffs, routers  
